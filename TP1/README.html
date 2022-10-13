@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-10-13 Thu 13:33 -->
+<!-- 2022-10-13 Thu 14:01 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>x86 assembly programming (integers)</title>
@@ -191,7 +191,7 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { }
+  .org-svg { width: 90%; }
 </style>
 </head>
 <body>
@@ -201,18 +201,18 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org8adfb08">1. Introduction</a></li>
-<li><a href="#org8da6abe">2. Intel vs. AT&amp;T syntax</a></li>
-<li><a href="#org6228b57">3. x86 registers</a></li>
-<li><a href="#org476c8fb">4. x86 instructions</a></li>
-<li><a href="#org28632eb">5. Exercices</a></li>
-<li><a href="#org18b61d5">6. Solutions</a></li>
+<li><a href="#org0bb3fe9">1. Introduction</a></li>
+<li><a href="#orgdd49281">2. Intel vs. AT&amp;T syntax</a></li>
+<li><a href="#orga3a8175">3. x86 registers</a></li>
+<li><a href="#orgd5696bb">4. x86 instructions</a></li>
+<li><a href="#orgb03890c">5. Exercices</a></li>
+<li><a href="#org532f155">6. Solutions</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org8adfb08" class="outline-2">
-<h2 id="org8adfb08"><span class="section-number-2">1.</span> Introduction</h2>
+<div id="outline-container-org0bb3fe9" class="outline-2">
+<h2 id="org0bb3fe9"><span class="section-number-2">1.</span> Introduction</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 The purpose of this lab is to get you acquainted and familiarized with the x86 assembly.
@@ -225,260 +225,260 @@ can write inlined assembly within a C function definition.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-c">/*
-  This code is meant as an example of to write inline x86 assembly code.
+<pre class="src src-c"><span style="color: #7f7f7f;">/*</span>
+<span style="color: #7f7f7f;">  This code is meant as an example of to write inline x86 assembly code.</span>
 
-  Compilation:
-      $ gcc -O1 0.c -o 0
+<span style="color: #7f7f7f;">  Compilation:</span>
+<span style="color: #7f7f7f;">      $ gcc -O1 0.c -o 0</span>
 
-  Execution:
-      $ ./0 10 3
+<span style="color: #7f7f7f;">  Execution:</span>
+<span style="color: #7f7f7f;">      $ ./0 10 3</span>
 
-  For more info about inline assembly:
+<span style="color: #7f7f7f;">  For more info about inline assembly:</span>
 
-  https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html
-*/
+<span style="color: #7f7f7f;">  https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html</span>
+<span style="color: #7f7f7f;">*/</span>
 
-//
-#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
+<span style="color: #7f7f7f;">//</span>
+<span style="color: #ffd700;">#include</span> <span style="color: #deb887;">&lt;stdio.h&gt;</span>
+<span style="color: #ffd700;">#include</span> <span style="color: #deb887;">&lt;stdlib.h&gt;</span>
 
-//Example of an addition without register labeling.
-//Registers are addressed using their positionning 0, 1, 2, ...
-int asm_iadd0(int a, int b)
+<span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">Example of an addition without register labeling.</span>
+<span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">Registers are addressed using their positionning 0, 1, 2, ...</span>
+<span style="color: #98f5ff;">int</span> <span style="color: #daa520;">asm_iadd0</span>(<span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">a</span>, <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">b</span>)
 {
-  //
-  int s = 0;
+  <span style="color: #7f7f7f;">//</span>
+  <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">s</span> = 0;
 
-  __asm__ volatile(
+  <span style="color: #00bfff;">__asm__</span> <span style="color: #00bfff;">volatile</span>(
 
-		   "add %1, %2;\n" //b += a
+                   <span style="color: #deb887;">"add %1, %2;\n"</span> <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">b += a</span>
 
-		   "mov %2, %0;\n" //s = b
+                   <span style="color: #deb887;">"mov %2, %0;\n"</span> <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">s = b</span>
 
-		   : //outputs
-		     "=r" (s)  //%0 is the register's ID
+                   : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">outputs</span>
+                     <span style="color: #deb887;">"=r"</span> (s)  <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">%0 is the register's ID</span>
 
-		   : //inputs
-		     "r" (a),  //%1
-		     "r" (b)   //%2
+                   : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">inputs</span>
+                     <span style="color: #deb887;">"r"</span> (a),  <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">%1</span>
+                     <span style="color: #deb887;">"r"</span> (b)   <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">%2</span>
 
-		   : //clobber
-		     "cc", "memory");
+                   : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">clobber</span>
+                     <span style="color: #deb887;">"cc"</span>, <span style="color: #deb887;">"memory"</span>);
 
-  return s;
+  <span style="color: #00bfff;">return</span> s;
 }
 
-//Using register labels
-int asm_iadd1(int a, int b)
+<span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">Using register labels</span>
+<span style="color: #98f5ff;">int</span> <span style="color: #daa520;">asm_iadd1</span>(<span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">a</span>, <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">b</span>)
 {
-  //
-  int s = 0;
+  <span style="color: #7f7f7f;">//</span>
+  <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">s</span> = 0;
 
-  __asm__ volatile(
+  <span style="color: #00bfff;">__asm__</span> <span style="color: #00bfff;">volatile</span>(
 
-		   "add %[_a], %[_b];\n" //b += a
+                   <span style="color: #deb887;">"add %[_a], %[_b];\n"</span> <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">b += a</span>
 
-		   "mov %[_b], %[_s];\n" //s = b
+                   <span style="color: #deb887;">"mov %[_b], %[_s];\n"</span> <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">s = b</span>
 
-		   : //outputs
-		     [_s] "=r" (s)  //value
+                   : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">outputs</span>
+                     [_s] <span style="color: #deb887;">"=r"</span> (s)  <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">value</span>
 
-		   : //inputs
-		     [_a] "r" (a),  //value
-		     [_b] "r" (b)   //value
+                   : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">inputs</span>
+                     [_a] <span style="color: #deb887;">"r"</span> (a),  <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">value</span>
+                     [_b] <span style="color: #deb887;">"r"</span> (b)   <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">value</span>
 
-		   : //clobber
-		     "cc", "memory");
+                   : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">clobber</span>
+                     <span style="color: #deb887;">"cc"</span>, <span style="color: #deb887;">"memory"</span>);
 
-  return s;
+  <span style="color: #00bfff;">return</span> s;
 }
 
-//
-int asm_iadd2(int a, int b)
+<span style="color: #7f7f7f;">//</span>
+<span style="color: #98f5ff;">int</span> <span style="color: #daa520;">asm_iadd2</span>(<span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">a</span>, <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">b</span>)
 {
-  //
-  int s = 0;
+  <span style="color: #7f7f7f;">//</span>
+  <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">s</span> = 0;
 
-  __asm__ volatile(
+  <span style="color: #00bfff;">__asm__</span> <span style="color: #00bfff;">volatile</span>(
 
-		   "add %[_a], %[_b];\n" //b += a
+                   <span style="color: #deb887;">"add %[_a], %[_b];\n"</span> <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">b += a</span>
 
-		   "mov %[_b], (%[_s]);\n" //*s = b
+                   <span style="color: #deb887;">"mov %[_b], (%[_s]);\n"</span> <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">*s = b</span>
 
-		   : //outputs
-		   : //inputs
-		     [_a] "r" (a),  //value
-		     [_b] "r" (b),  //value
-		     [_s] "r" (&amp;s)  //pointer
+                   : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">outputs</span>
+                   : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">inputs</span>
+                     [_a] <span style="color: #deb887;">"r"</span> (a),  <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">value</span>
+                     [_b] <span style="color: #deb887;">"r"</span> (b),  <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">value</span>
+                     [_s] <span style="color: #deb887;">"r"</span> (&amp;s)  <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">pointer</span>
 
-		   : //clobber
-		     "cc", "memory");
+                   : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">clobber</span>
+                     <span style="color: #deb887;">"cc"</span>, <span style="color: #deb887;">"memory"</span>);
 
-  return s;
+  <span style="color: #00bfff;">return</span> s;
 }
 
-//
-int asm_imul(int a, int b)
+<span style="color: #7f7f7f;">//</span>
+<span style="color: #98f5ff;">int</span> <span style="color: #daa520;">asm_imul</span>(<span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">a</span>, <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">b</span>)
 {
-  //
-  int m = 0;
+  <span style="color: #7f7f7f;">//</span>
+  <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">m</span> = 0;
 
-  __asm__ volatile (
-		    "imul %[_a], %[_b];\n"
+  <span style="color: #00bfff;">__asm__</span> <span style="color: #00bfff;">volatile</span> (
+                    <span style="color: #deb887;">"imul %[_a], %[_b];\n"</span>
 
-		    "mov %[_b], %[_m];\n"
+                    <span style="color: #deb887;">"mov %[_b], %[_m];\n"</span>
 
-		    : //outputs
-		      [_m] "=r" (m)
+                    : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">outputs</span>
+                      [_m] <span style="color: #deb887;">"=r"</span> (m)
 
-		    : //inputs
-		      [_a] "r" (a),  //value
-		      [_b] "r" (b)   //value
+                    : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">inputs</span>
+                      [_a] <span style="color: #deb887;">"r"</span> (a),  <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">value</span>
+                      [_b] <span style="color: #deb887;">"r"</span> (b)   <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">value</span>
 
-		    : //clobber
-		      "cc", "memory");
+                    : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">clobber</span>
+                      <span style="color: #deb887;">"cc"</span>, <span style="color: #deb887;">"memory"</span>);
 
-  return m;
+  <span style="color: #00bfff;">return</span> m;
 }
 
-//
-void asm_idiv(int a, int b, int *q, int *r)
+<span style="color: #7f7f7f;">//</span>
+<span style="color: #98f5ff;">void</span> <span style="color: #daa520;">asm_idiv</span>(<span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">a</span>, <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">b</span>, <span style="color: #98f5ff;">int</span> *<span style="color: #4eee94;">q</span>, <span style="color: #98f5ff;">int</span> *<span style="color: #4eee94;">r</span>)
 {
-  //Quotient
-  int qq = 0;
+  <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">Quotient</span>
+  <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">qq</span> = 0;
 
-  //Remainder
-  int rr = 0;
+  <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">Remainder</span>
+  <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">rr</span> = 0;
 
-  __asm__ volatile (
-		    "xor %%eax, %%eax;\n" //rax = 0
-		    "xor %%edx, %%edx;\n" //rdx = 0
+  <span style="color: #00bfff;">__asm__</span> <span style="color: #00bfff;">volatile</span> (
+                    <span style="color: #deb887;">"xor %%eax, %%eax;\n"</span> <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">rax = 0</span>
+                    <span style="color: #deb887;">"xor %%edx, %%edx;\n"</span> <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">rdx = 0</span>
 
-		    //Set eax value to a
-		    "mov %[_a], %%eax;\n"
+                    <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">Set eax value to a</span>
+                    <span style="color: #deb887;">"mov %[_a], %%eax;\n"</span>
 
-		    //Divides RAX by operand --&gt; RAX = a / b, RDX = a % b 
-		    "idiv %[_b];\n"
+                    <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">Divides RAX by operand --&gt; RAX = a / b, RDX = a % b </span>
+                    <span style="color: #deb887;">"idiv %[_b];\n"</span>
 
-		    //
-		    "mov %%eax, %[_q];\n"
-		    "mov %%edx, %[_r];\n"
+                    <span style="color: #7f7f7f;">//</span>
+                    <span style="color: #deb887;">"mov %%eax, %[_q];\n"</span>
+                    <span style="color: #deb887;">"mov %%edx, %[_r];\n"</span>
 
-		    : //outputs
-		      [_q] "=r" (qq), //value
-		      [_r] "=r" (rr)  //value
+                    : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">outputs</span>
+                      [_q] <span style="color: #deb887;">"=r"</span> (qq), <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">value</span>
+                      [_r] <span style="color: #deb887;">"=r"</span> (rr)  <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">value</span>
 
-		    : //inputs
-		      [_a] "r" (a),  //value
-		      [_b] "r" (b)   //value
+                    : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">inputs</span>
+                      [_a] <span style="color: #deb887;">"r"</span> (a),  <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">value</span>
+                      [_b] <span style="color: #deb887;">"r"</span> (b)   <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">value</span>
 
-		    : //clobber
-		      "cc", "memory", "eax", "edx");
+                    : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">clobber</span>
+                      <span style="color: #deb887;">"cc"</span>, <span style="color: #deb887;">"memory"</span>, <span style="color: #deb887;">"eax"</span>, <span style="color: #deb887;">"edx"</span>);
 
-  //
+  <span style="color: #7f7f7f;">//</span>
   *q = qq;
   *r = rr;
 }
 
-//
-int asm_reduc(int *p, int n)
+<span style="color: #7f7f7f;">//</span>
+<span style="color: #98f5ff;">int</span> <span style="color: #daa520;">asm_reduc</span>(<span style="color: #98f5ff;">int</span> *<span style="color: #4eee94;">p</span>, <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">n</span>)
 {
-  //Accumulation variable
-  int r = 0;
+  <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">Accumulation variable</span>
+  <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">r</span> = 0;
 
-  //Array size in bytes
-  int s = sizeof(int) * n;
+  <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">Array size in bytes</span>
+  <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">s</span> = <span style="color: #00bfff;">sizeof</span>(<span style="color: #98f5ff;">int</span>) * n;
 
-  //
-  __asm__ volatile (
-		    //Initialize registers
-		    "xor %%eax, %%eax;\n" //eax = 0 --&gt; accumulation register
-		    "xor %%rcx, %%rcx;\n" //rcx = 0 --&gt; array element index
+  <span style="color: #7f7f7f;">//</span>
+  <span style="color: #00bfff;">__asm__</span> <span style="color: #00bfff;">volatile</span> (
+                    <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">Initialize registers</span>
+                    <span style="color: #deb887;">"xor %%eax, %%eax;\n"</span> <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">eax = 0 --&gt; accumulation register</span>
+                    <span style="color: #deb887;">"xor %%rcx, %%rcx;\n"</span> <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">rcx = 0 --&gt; array element index</span>
 
-		    //Set up loop label
-		    "1:;\n"
+                    <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">Set up loop label</span>
+                    <span style="color: #deb887;">"1:;\n"</span>
 
-		    //Load value from memory address (p + rcx) and add it to eax
-		    "add (%[_p], %%rcx), %%eax;\n"
+                    <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">Load value from memory address (p + rcx) and add it to eax</span>
+                    <span style="color: #deb887;">"add (%[_p], %%rcx), %%eax;\n"</span>
 
-		   //Loop control
-		    "add $4, %%rcx;\n"     //Move rcx by 4 bytes - sizeof(int) - at each iteration
-		    "cmp %[_s], %%ecx;\n"  //Compare ecx to array size
-		    "jl 1b;\n"             //Jump to loop entry label if ecx &lt; array size
+                   <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">Loop control</span>
+                    <span style="color: #deb887;">"add $4, %%rcx;\n"</span>     <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">Move rcx by 4 bytes - sizeof(int) - at each iteration</span>
+                    <span style="color: #deb887;">"cmp %[_s], %%ecx;\n"</span>  <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">Compare ecx to array size</span>
+                    <span style="color: #deb887;">"jl 1b;\n"</span>             <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">Jump to loop entry label if ecx &lt; array size</span>
 
-		    "mov %%eax, %[_r];\n"  //Store final result in output variable
+                    <span style="color: #deb887;">"mov %%eax, %[_r];\n"</span>  <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">Store final result in output variable</span>
 
-		    : //outputs
-		      [_r] "=r" (r)
+                    : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">outputs</span>
+                      [_r] <span style="color: #deb887;">"=r"</span> (r)
 
-		    : //inputs
-		      [_p] "r" (p),
-		      [_s] "r" (s)
+                    : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">inputs</span>
+                      [_p] <span style="color: #deb887;">"r"</span> (p),
+                      [_s] <span style="color: #deb887;">"r"</span> (s)
 
-		    : //clobber
-		      "cc", "memory", "eax", "rcx"
-		    );
+                    : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">clobber</span>
+                      <span style="color: #deb887;">"cc"</span>, <span style="color: #deb887;">"memory"</span>, <span style="color: #deb887;">"eax"</span>, <span style="color: #deb887;">"rcx"</span>
+                    );
 
-  //
-  return r;
+  <span style="color: #7f7f7f;">//</span>
+  <span style="color: #00bfff;">return</span> r;
 }
 
-int C_reduc(int *p, int n)
+<span style="color: #98f5ff;">int</span> <span style="color: #daa520;">C_reduc</span>(<span style="color: #98f5ff;">int</span> *<span style="color: #4eee94;">p</span>, <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">n</span>)
 {
-  int r = 0;
+  <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">r</span> = 0;
 
-  for (int i = 0; i &lt; n; i++)
+  <span style="color: #00bfff;">for</span> (<span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">i</span> = 0; i &lt; n; i++)
     r += p[i];
 
-  return r;
+  <span style="color: #00bfff;">return</span> r;
 }
 
-//
-int main(int argc, char **argv)
+<span style="color: #7f7f7f;">//</span>
+<span style="color: #98f5ff;">int</span> <span style="color: #daa520;">main</span>(<span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">argc</span>, <span style="color: #98f5ff;">char</span> **<span style="color: #4eee94;">argv</span>)
 {
-  //
-  if (argc &lt; 3)
-    return printf("Usage: %s a b\n", argv[0]), 1;
+  <span style="color: #7f7f7f;">//</span>
+  <span style="color: #00bfff;">if</span> (argc &lt; 3)
+    <span style="color: #00bfff;">return</span> printf(<span style="color: #deb887;">"Usage: %s a b\n"</span>, argv[0]), 1;
 
-  //
-  int a = atoi(argv[1]);
-  int b = atoi(argv[2]);
+  <span style="color: #7f7f7f;">//</span>
+  <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">a</span> = atoi(argv[1]);
+  <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">b</span> = atoi(argv[2]);
 
-  int q = 0;
-  int r = 0;
+  <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">q</span> = 0;
+  <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">r</span> = 0;
 
-  //
-  printf("%d + %d = %d\n"  , a, b, asm_iadd0(a, b));
-  printf("%d + %d = %d\n"  , a, b, asm_iadd1(a, b));
-  printf("%d + %d = %d\n\n", a, b, asm_iadd2(a, b));
+  <span style="color: #7f7f7f;">//</span>
+  printf(<span style="color: #deb887;">"%d + %d = %d\n"</span>  , a, b, asm_iadd0(a, b));
+  printf(<span style="color: #deb887;">"%d + %d = %d\n"</span>  , a, b, asm_iadd1(a, b));
+  printf(<span style="color: #deb887;">"%d + %d = %d\n\n"</span>, a, b, asm_iadd2(a, b));
 
-  //
-  printf("%d * %d = %d\n\n", a, b, asm_imul(a, b));
+  <span style="color: #7f7f7f;">//</span>
+  printf(<span style="color: #deb887;">"%d * %d = %d\n\n"</span>, a, b, asm_imul(a, b));
 
-  //
+  <span style="color: #7f7f7f;">//</span>
   asm_idiv(a, b, &amp;q, &amp;r);
 
-  printf("%d / %d =&gt; q: %d, r: %d\n\n", a, b, q, r);
+  printf(<span style="color: #deb887;">"%d / %d =&gt; q: %d, r: %d\n\n"</span>, a, b, q, r);
 
-  //
-  int p[100];
-  int n = 100;
+  <span style="color: #7f7f7f;">//</span>
+  <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">p</span>[100];
+  <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">n</span> = 100;
 
-  //Initialize array 
-  for (int i = 0; i &lt; n; i++)
+  <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">Initialize array </span>
+  <span style="color: #00bfff;">for</span> (<span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">i</span> = 0; i &lt; n; i++)
     p[i] = i + 1;
 
-  //
-  int r_asm = asm_reduc(p, 100);
-  int r_C   = C_reduc(p, n);
+  <span style="color: #7f7f7f;">//</span>
+  <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">r_asm</span> = asm_reduc(p, 100);
+  <span style="color: #98f5ff;">int</span> <span style="color: #4eee94;">r_C</span>   = C_reduc(p, n);
 
-  //
-  printf("reduc asm: %d\n", r_asm);
-  printf("reduc C  : %d\n", r_C);
+  <span style="color: #7f7f7f;">//</span>
+  printf(<span style="color: #deb887;">"reduc asm: %d\n"</span>, r_asm);
+  printf(<span style="color: #deb887;">"reduc C  : %d\n"</span>, r_C);
 
-  //
-  return 0;
+  <span style="color: #7f7f7f;">//</span>
+  <span style="color: #00bfff;">return</span> 0;
 }
 </pre>
 </div>
@@ -494,8 +494,8 @@ here <a href="https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html#Clobbers-and-
 </div>
 </div>
 
-<div id="outline-container-org8da6abe" class="outline-2">
-<h2 id="org8da6abe"><span class="section-number-2">2.</span> Intel vs. AT&amp;T syntax</h2>
+<div id="outline-container-orgdd49281" class="outline-2">
+<h2 id="orgdd49281"><span class="section-number-2">2.</span> Intel vs. AT&amp;T syntax</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 When writing inlined assembly code, there are two syntaxes available. The <b>Intel</b> syntax, where the destination operand is placed first and
@@ -509,46 +509,46 @@ Here is an example of the same assembly code using both syntaxes:
 
 <div class="org-src-container">
 <pre class="src src-c">
-//Intel syntax (from the right to the left) 
-__asm__ volatile(
-		 //Directive to signal to the compiler to use the Intel syntax without register prefixing 
-		 ".intel_syntax noprefix;\n"   
+<span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">Intel syntax (from the right to the left) </span>
+<span style="color: #00bfff;">__asm__</span> <span style="color: #00bfff;">volatile</span>(
+                 <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">Directive to signal to the compiler to use the Intel syntax without register prefixing </span>
+                 <span style="color: #deb887;">".intel_syntax noprefix;\n"</span>   
 
-		 "mov rax, 1;\n" //rax = 1
-		 "mov rbx, 2;\n" //rbx = 2
+                 <span style="color: #deb887;">"mov rax, 1;\n"</span> <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">rax = 1</span>
+                 <span style="color: #deb887;">"mov rbx, 2;\n"</span> <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">rbx = 2</span>
 
-		 "add rax, rbx;\n" //rax += rbx 
+                 <span style="color: #deb887;">"add rax, rbx;\n"</span> <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">rax += rbx </span>
 
-		 ".att_syntax prefix"
-		 : //outputs
+                 <span style="color: #deb887;">".att_syntax prefix"</span>
+                 : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">outputs</span>
 
-		 : //inputs
+                 : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">inputs</span>
 
-		 : //clobber
-		   "cc", "memory", "rax", "rbx");
+                 : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">clobber</span>
+                   <span style="color: #deb887;">"cc"</span>, <span style="color: #deb887;">"memory"</span>, <span style="color: #deb887;">"rax"</span>, <span style="color: #deb887;">"rbx"</span>);
 
 
-//AT&amp;T syntax (default) with prefixed registers (%%) (from the left to the right)
-__asm__ volatile(
-		 "mov $1, %%rax;\n" //rax = 1
-		 "mov $2, %%rbx;\n" //rbx = 2
+<span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">AT&amp;T syntax (default) with prefixed registers (%%) (from the left to the right)</span>
+<span style="color: #00bfff;">__asm__</span> <span style="color: #00bfff;">volatile</span>(
+                 <span style="color: #deb887;">"mov $1, %%rax;\n"</span> <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">rax = 1</span>
+                 <span style="color: #deb887;">"mov $2, %%rbx;\n"</span> <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">rbx = 2</span>
 
-		 "add %%rbx, %%rax;\n" //rax += rbx 
+                 <span style="color: #deb887;">"add %%rbx, %%rax;\n"</span> <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">rax += rbx </span>
 
-		 : //outputs
+                 : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">outputs</span>
 
-		 : //inputs
+                 : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">inputs</span>
 
-		 : //clobber
-		   "cc", "memory", "rax", "rbx");
+                 : <span style="color: #7f7f7f;">//</span><span style="color: #7f7f7f;">clobber</span>
+                   <span style="color: #deb887;">"cc"</span>, <span style="color: #deb887;">"memory"</span>, <span style="color: #deb887;">"rax"</span>, <span style="color: #deb887;">"rbx"</span>);
 
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org6228b57" class="outline-2">
-<h2 id="org6228b57"><span class="section-number-2">3.</span> x86 registers</h2>
+<div id="outline-container-orga3a8175" class="outline-2">
+<h2 id="orga3a8175"><span class="section-number-2">3.</span> x86 registers</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 x86 CPUs implement multiple registers. The following table lists all the available registers for programmers in 8-bit, 16-bit, 32-bit, and 64-bit modes: 
@@ -839,8 +839,8 @@ In order to convert values from one type/register size to another, you can use t
 </div>
 </div>
 
-<div id="outline-container-org476c8fb" class="outline-2">
-<h2 id="org476c8fb"><span class="section-number-2">4.</span> x86 instructions</h2>
+<div id="outline-container-orgd5696bb" class="outline-2">
+<h2 id="orgd5696bb"><span class="section-number-2">4.</span> x86 instructions</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 A list of all x86 instructions with detailed descriptions is available here: <a href="https://www.felixcloutier.com/x86/">https://www.felixcloutier.com/x86/</a>
@@ -850,7 +850,7 @@ A list of all x86 instructions with detailed descriptions is available here: <a 
 For this lab, you will only need the following instructions:
 </p>
 
-<pre class="example" id="orgbda4b8a">
+<pre class="example" id="orgaaa66ce">
 
 mov
 movb
@@ -874,8 +874,8 @@ inc
 </div>
 </div>
 
-<div id="outline-container-org28632eb" class="outline-2">
-<h2 id="org28632eb"><span class="section-number-2">5.</span> Exercices</h2>
+<div id="outline-container-orgb03890c" class="outline-2">
+<h2 id="orgb03890c"><span class="section-number-2">5.</span> Exercices</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 For each of the provided codes, you have to convert a specific C function into its equivalent x86 assembly code and add the proper test to the main function.
@@ -887,20 +887,20 @@ Below are small descriptions of the provided codes with the target functions:
 </p>
 
 <ul class="org-ul">
-<li><b>1.c</b>: This code calculates the number of iterations necessary to converge using the Collatz conditions. You have Convert the '<b>collatz</b>' function into its equivalent in x86 assembly.</li>
+<li><b>1.c</b>: This code calculates the number of iterations necessary to converge using the Collatz conditions. You have to convert the '<b>collatz</b>' function into its equivalent in x86 assembly.</li>
 <li><b>2.c</b>: This code returns the n-th number in the Fibonacci series. You have to convert the '<b>fibo</b>' function into its equivalent in x86 assembly.</li>
 <li><b>3.c</b>: This code multiplies/scales the integer values stored in a array by a given scaling factor. You have to convert the '<b>scale</b>' function into x86 assembly.</li>
 <li><b>4.c</b>: This code computes the Dot Product of two arrays of integers. You have to convert the '<b>dotprod</b>' function into x86 assembly.</li>
 <li><b>5.c</b>: This code calculates the Hamming distance between two DNA sequences. You have to convert the '<b>hamming</b>' function in to x86 assembly. A sequence generator is provided along with
-a couple of sequences (stored in the <b><code>seq_in</code></b> directory) for testing.</li>
-<li><b>6.c</b>: This code generates the invert of a given PPM image. You have to convert the '<b>invert</b>' function into its equivalent x86 assembly. A set of images is provided in the <b><code>ppm_in</code></b>
+a couple of sequences (stored in the <code>*seq_in*</code> directory) for testing.</li>
+<li><b>6.c</b>: This code generates the invert of a given PPM image. You have to convert the '<b>invert</b>' function into its equivalent x86 assembly. A set of images is provided in the <code>*ppm_in*</code>
 directory.</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org18b61d5" class="outline-2">
-<h2 id="org18b61d5"><span class="section-number-2">6.</span> Solutions</h2>
+<div id="outline-container-org532f155" class="outline-2">
+<h2 id="org532f155"><span class="section-number-2">6.</span> Solutions</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 The provided <b>sol</b> directory contains solutions to all the exercises with an additional performance comparison for the different <b>hamming</b> code implementations.
@@ -911,7 +911,7 @@ The provided <b>sol</b> directory contains solutions to all the exercises with a
 <div id="postamble" class="status">
 <p class="date">Date: 2021</p>
 <p class="author">Author: yaspr</p>
-<p class="date">Created: 2022-10-13 Thu 13:33</p>
+<p class="date">Created: 2022-10-13 Thu 14:01</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

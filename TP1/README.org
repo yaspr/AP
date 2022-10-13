@@ -140,13 +140,13 @@
 
   Below are small descriptions of the provided codes with the target functions:
   
-  - *1.c*: This code calculates the number of iterations necessary to converge using the Collatz conditions. You have Convert the '*collatz*' function into its equivalent in x86 assembly.
+  - *1.c*: This code calculates the number of iterations necessary to converge using the Collatz conditions. You have to convert the '*collatz*' function into its equivalent in x86 assembly.
   - *2.c*: This code returns the n-th number in the Fibonacci series. You have to convert the '*fibo*' function into its equivalent in x86 assembly.
   - *3.c*: This code multiplies/scales the integer values stored in a array by a given scaling factor. You have to convert the '*scale*' function into x86 assembly.
   - *4.c*: This code computes the Dot Product of two arrays of integers. You have to convert the '*dotprod*' function into x86 assembly.
   - *5.c*: This code calculates the Hamming distance between two DNA sequences. You have to convert the '*hamming*' function in to x86 assembly. A sequence generator is provided along with
-    a couple of sequences (stored in the *=seq_in=* directory) for testing.
-  - *6.c*: This code generates the invert of a given PPM image. You have to convert the '*invert*' function into its equivalent x86 assembly. A set of images is provided in the *=ppm_in=*
+    a couple of sequences (stored in the =*seq_in*= directory) for testing.
+  - *6.c*: This code generates the invert of a given PPM image. You have to convert the '*invert*' function into its equivalent x86 assembly. A set of images is provided in the =*ppm_in*=
     directory. 
          
 * Solutions

@@ -141,7 +141,7 @@
   The CPU governor is the part of the OS that handles the dynamic frequency management of CPU cores.
   There are multiple governors available under the two most common CPU drivers:
 
-     - The *=intel_pstate=* driver provides the following governors: *performance*, *powersave*   
+     - The =*intel_pstate*= driver provides the following governors: *performance*, *powersave*   
      - The *acpi-cpufreq* driver provides the following governors: *conservative*, *ondemand*, *userspace*,
        *powersave*, *performance*, *schedutil*
 

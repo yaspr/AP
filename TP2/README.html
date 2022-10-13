@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-10-13 Thu 13:37 -->
+<!-- 2022-10-13 Thu 14:03 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>x86 assembly programming (floating-point)</title>
@@ -191,7 +191,7 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { }
+  .org-svg { width: 90%; }
 </style>
 </head>
 <body>
@@ -201,22 +201,22 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org82db462">1. Introduction</a></li>
-<li><a href="#org2f428aa">2. SSE, AVX2, and AVX512</a>
+<li><a href="#org78aa379">1. Introduction</a></li>
+<li><a href="#orga7cdcd0">2. SSE, AVX2, and AVX512</a>
 <ul>
-<li><a href="#org9f6d405">2.1. SSE registers</a></li>
-<li><a href="#orga8ee2f0">2.2. AVX2</a></li>
-<li><a href="#org8dbb2e4">2.3. AVX512</a></li>
+<li><a href="#orgc21cb78">2.1. SSE registers</a></li>
+<li><a href="#orgeedc541">2.2. AVX2</a></li>
+<li><a href="#orgbf9b2a1">2.3. AVX512</a></li>
 </ul>
 </li>
-<li><a href="#org71afab0">3. Deliverable</a></li>
-<li><a href="#org6f9d1d3">4. Important note</a></li>
+<li><a href="#orgfa82244">3. Deliverable</a></li>
+<li><a href="#org420da5e">4. Important note</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org82db462" class="outline-2">
-<h2 id="org82db462"><span class="section-number-2">1.</span> Introduction</h2>
+<div id="outline-container-org78aa379" class="outline-2">
+<h2 id="org78aa379"><span class="section-number-2">1.</span> Introduction</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 The aim of this lab is to introduce the floating-point instructions
@@ -232,8 +232,8 @@ simulation code into their respective assembly versions.
 </div>
 </div>
 
-<div id="outline-container-org2f428aa" class="outline-2">
-<h2 id="org2f428aa"><span class="section-number-2">2.</span> SSE, AVX2, and AVX512</h2>
+<div id="outline-container-orga7cdcd0" class="outline-2">
+<h2 id="orga7cdcd0"><span class="section-number-2">2.</span> SSE, AVX2, and AVX512</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 SSE (Streaming SIMD Extension) and AVX (Advanced Vector eXtension) are SIMD extensions
@@ -262,8 +262,8 @@ naming convention.
 </p>
 </div>
 
-<div id="outline-container-org9f6d405" class="outline-3">
-<h3 id="org9f6d405"><span class="section-number-3">2.1.</span> SSE registers</h3>
+<div id="outline-container-orgc21cb78" class="outline-3">
+<h3 id="orgc21cb78"><span class="section-number-3">2.1.</span> SSE registers</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 The SSE instruction set extends the x86 instruction set not only with new operations but also additional
@@ -274,8 +274,8 @@ floating-point values.
 </div>
 </div>
 
-<div id="outline-container-orga8ee2f0" class="outline-3">
-<h3 id="orga8ee2f0"><span class="section-number-3">2.2.</span> AVX2</h3>
+<div id="outline-container-orgeedc541" class="outline-3">
+<h3 id="orgeedc541"><span class="section-number-3">2.2.</span> AVX2</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 The AVX2 instruction set adds 16 256-bit (32 bytes) new registers to the mix: YMM0 to YMM15.
@@ -284,8 +284,8 @@ The first 8 YMM registers overlap with the first 8 XMM registers.
 </div>
 </div>
 
-<div id="outline-container-org8dbb2e4" class="outline-3">
-<h3 id="org8dbb2e4"><span class="section-number-3">2.3.</span> AVX512</h3>
+<div id="outline-container-orgbf9b2a1" class="outline-3">
+<h3 id="orgbf9b2a1"><span class="section-number-3">2.3.</span> AVX512</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 The AVX512 instruction set adds 32 512-bit (64 bytes) registers. The first 16 registers overlap
@@ -550,8 +550,8 @@ with the AVX2 registers. The table below covers register overlapping over all in
 </div>
 </div>
 
-<div id="outline-container-org71afab0" class="outline-2">
-<h2 id="org71afab0"><span class="section-number-2">3.</span> Deliverable</h2>
+<div id="outline-container-orgfa82244" class="outline-2">
+<h2 id="orgfa82244"><span class="section-number-2">3.</span> Deliverable</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 For this lab, you have to convert the following C functions in the N-Body interaction simulation
@@ -561,34 +561,34 @@ operations.
 
 <div class="org-src-container">
 <pre class="src src-c">
-//
-vector add_vectors(vector a, vector b)
+<span style="color: #7f7f7f;">//</span>
+<span style="color: #98f5ff;">vector</span> <span style="color: #daa520;">add_vectors</span>(<span style="color: #98f5ff;">vector</span> <span style="color: #4eee94;">a</span>, <span style="color: #98f5ff;">vector</span> <span style="color: #4eee94;">b</span>)
 {
-  vector c = { a.x + b.x, a.y + b.y };
+  <span style="color: #98f5ff;">vector</span> <span style="color: #4eee94;">c</span> = { a.x + b.x, a.y + b.y };
 
-  return c;
+  <span style="color: #00bfff;">return</span> c;
 }
 
-//
-vector scale_vector(double b, vector a)
+<span style="color: #7f7f7f;">//</span>
+<span style="color: #98f5ff;">vector</span> <span style="color: #daa520;">scale_vector</span>(<span style="color: #98f5ff;">double</span> <span style="color: #4eee94;">b</span>, <span style="color: #98f5ff;">vector</span> <span style="color: #4eee94;">a</span>)
 {
-  vector c = { b * a.x, b * a.y };
+  <span style="color: #98f5ff;">vector</span> <span style="color: #4eee94;">c</span> = { b * a.x, b * a.y };
 
-  return c;
+  <span style="color: #00bfff;">return</span> c;
 }
 
-//
-vector sub_vectors(vector a, vector b)
+<span style="color: #7f7f7f;">//</span>
+<span style="color: #98f5ff;">vector</span> <span style="color: #daa520;">sub_vectors</span>(<span style="color: #98f5ff;">vector</span> <span style="color: #4eee94;">a</span>, <span style="color: #98f5ff;">vector</span> <span style="color: #4eee94;">b</span>)
 {
-  vector c = { a.x - b.x, a.y - b.y };
+  <span style="color: #98f5ff;">vector</span> <span style="color: #4eee94;">c</span> = { a.x - b.x, a.y - b.y };
 
-  return c;
+  <span style="color: #00bfff;">return</span> c;
 }
 
-//
-double mod(vector a)
+<span style="color: #7f7f7f;">//</span>
+<span style="color: #98f5ff;">double</span> <span style="color: #daa520;">mod</span>(<span style="color: #98f5ff;">vector</span> <span style="color: #4eee94;">a</span>)
 {
-  return sqrt(a.x * a.x + a.y * a.y);
+  <span style="color: #00bfff;">return</span> sqrt(a.x * a.x + a.y * a.y);
 }
 
 </pre>
@@ -620,7 +620,7 @@ There are multiple governors available under the two most common CPU drivers:
 </p>
 
 <ul class="org-ul">
-<li>The <b><code>intel_pstate</code></b> driver provides the following governors: <b>performance</b>, <b>powersave</b></li>
+<li>The <code>*intel_pstate*</code> driver provides the following governors: <b>performance</b>, <b>powersave</b></li>
 <li>The <b>acpi-cpufreq</b> driver provides the following governors: <b>conservative</b>, <b>ondemand</b>, <b>userspace</b>,
 <b>powersave</b>, <b>performance</b>, <b>schedutil</b></li>
 </ul>
@@ -644,7 +644,7 @@ This command will return, depending on your CPU driver, the following:
 1.1 - The Intel Pstate driver
 </p>
 
-<pre class="example" id="orgc523e53">
+<pre class="example" id="orgb75f0b6">
 
 analyzing CPU 0:
 driver: intel_pstate
@@ -679,7 +679,7 @@ $ sudo cpupower -c all -g performance
 1.2 - The ACPI driver
 </p>
 
-<pre class="example" id="org5378988">
+<pre class="example" id="org41a1909">
 
 analyzing CPU 0:
 driver: acpi-cpufreq
@@ -738,7 +738,7 @@ N-Body simulation, you can draw comparison plots of the performance of each vers
 An example of a GNUPlot script to compare the C, SSE scalar, and SSE packed versions:
 </p>
 
-<pre class="example" id="org5e4e832">
+<pre class="example" id="orgd17bb64">
 
 set term png size 1900,1000
 
@@ -754,8 +754,8 @@ plot "out0.dat" w lp "C version", "out0_sd.dat" w lp "SSE scalar", "out0_pd.dat"
 </div>
 </div>
 
-<div id="outline-container-org6f9d1d3" class="outline-2">
-<h2 id="org6f9d1d3"><span class="section-number-2">4.</span> Important note</h2>
+<div id="outline-container-org420da5e" class="outline-2">
+<h2 id="org420da5e"><span class="section-number-2">4.</span> Important note</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 If you are using a virtual machine, the performance measurements will most likely be wrong/invalid and
@@ -767,7 +767,7 @@ you won't be able to set the frequency/governor.
 <div id="postamble" class="status">
 <p class="date">Date: 2021</p>
 <p class="author">Author: yaspr</p>
-<p class="date">Created: 2022-10-13 Thu 13:37</p>
+<p class="date">Created: 2022-10-13 Thu 14:03</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
