@@ -1,0 +1,257 @@
+#+TITLE: x86 assembly programming (floating-point)
+#+AUTHOR: yaspr
+#+DATE: 2021
+
+* Introduction
+
+  The aim of this lab is to introduce the floating-point instructions
+  available on the x86 architecture. You are given 6 examples showcasing
+  the use of floating-point instructions in scalar and vector mode for 32-bit
+  and 64-bit floating-point values.
+
+  For this lab, you have to convert a given set of C functions within the *nbody0.c*
+  simulation code into their respective assembly versions.
+
+* SSE, AVX2, and AVX512
+
+  SSE (Streaming SIMD Extension) and AVX (Advanced Vector eXtension) are SIMD extensions
+  added to the x86 instruction set in order to speed up certain categories of code patterns
+  by introducing new instructions operating not only on scalars but on vectors (packets of elements).
+  These two instruction sets provide both scalar and vector instructions covering the single and
+  double precision floating-point formats.
+
+  For this lab, only SSE instructions are needed.
+
+  The SSE and AVX instructions have a predefined nomenclature depending on the scalar/vector nature
+  of the operation as well as the data types. Scalar single precision operations are
+  suffixed with *SS* (*Scalar Single precision*) and double precision operations with *SD*
+  (*Scalar Double precision*). For packed, or vector, operations the suffix can be either *PS*
+  (*Packed Single precision*) for single precision, or *PD* (*Packed Double precision*) for double
+  precision. AVX instructions must start with a *V* (VEX instruction extension).
+
+  The examples provided showcase multiple arithmetic and memory instructions using the previously described
+  naming convention.
+  
+** SSE registers
+
+   The SSE instruction set extends the x86 instruction set not only with new operations but also additional
+   registers. Eight 128-bit (16 bytes) registers (from XMM0 to XMM7) are available for the SSE instructions
+   to operate on. These registers can hold 4 single precision floating-point values, or 2 double precision
+   floating-point values.
+
+** AVX2
+
+   The AVX2 instruction set adds 16 256-bit (32 bytes) new registers to the mix: YMM0 to YMM15.
+   The first 8 YMM registers overlap with the first 8 XMM registers.
+
+** AVX512
+
+   The AVX512 instruction set adds 32 512-bit (64 bytes) registers. The first 16 registers overlap
+   with the AVX2 registers. The table below covers register overlapping over all instruction sets:  
+
+    | Instruction set | AVX512   | AVX2    | SSE    |
+    |-----------------+----------+---------+--------|
+    | Bits            | 511..256 | 255..28 | 127..0 |
+    |-----------------+----------+---------+--------|
+    |                 | ZMM0     | YMM0    | XMM0   |
+    |                 | ZMM1     | YMM1    | XMM1   |
+    |                 | ZMM2     | YMM2    | XMM2   |
+    |                 | ZMM3     | YMM3    | XMM3   |
+    |                 | ZMM4     | YMM4    | XMM4   |
+    |                 | ZMM5     | YMM5    | XMM5   |
+    |                 | ZMM6     | YMM6    | XMM6   |
+    |                 | ZMM7     | YMM7    | XMM7   |
+    |                 | ZMM8     | YMM8    | XMM8   |
+    |                 | ZMM9     | YMM9    | XMM9   |
+    |                 | ZMM10    | YMM10   | XMM10  |
+    |                 | ZMM11    | YMM11   | XMM11  |
+    |                 | ZMM12    | YMM12   | XMM12  |
+    |                 | ZMM13    | YMM13   | XMM13  |
+    |                 | ZMM14    | YMM14   | XMM14  |
+    |                 | ZMM15    | YMM15   | XMM15  |
+    |                 | ZMM16    | YMM16   | XMM16  |
+    |                 | ZMM17    | YMM17   | XMM17  |
+    |                 | ZMM18    | YMM18   | XMM18  |
+    |                 | ZMM19    | YMM19   | XMM19  |
+    |                 | ZMM20    | YMM20   | XMM20  |
+    |                 | ZMM21    | YMM21   | XMM21  |
+    |                 | ZMM22    | YMM22   | XMM22  |
+    |                 | ZMM23    | YMM23   | XMM23  |
+    |                 | ZMM24    | YMM24   | XMM24  |
+    |                 | ZMM25    | YMM25   | XMM25  |
+    |                 | ZMM26    | YMM26   | XMM26  |
+    |                 | ZMM27    | YMM27   | XMM27  |
+    |                 | ZMM28    | YMM28   | XMM28  |
+    |                 | ZMM29    | YMM29   | XMM29  |
+    |                 | ZMM30    | YMM30   | XMM30  |
+    |                 | ZMM31    | YMM31   | XMM31  |
+    
+* Deliverable
+
+  For this lab, you have to convert the following C functions in the N-Body interaction simulation
+  provided in the *todo/nbody0.c* directory into multiple assembly versions using scalar and vector
+  operations.  
+
+#+BEGIN_SRC c
+
+  //
+  vector add_vectors(vector a, vector b)
+  {
+    vector c = { a.x + b.x, a.y + b.y };
+  
+    return c;
+  }
+
+  //
+  vector scale_vector(double b, vector a)
+  {
+    vector c = { b * a.x, b * a.y };
+  
+    return c;
+  }
+
+  //
+  vector sub_vectors(vector a, vector b)
+  {
+    vector c = { a.x - b.x, a.y - b.y };
+  
+    return c;
+  }
+
+  //
+  double mod(vector a)
+  {
+    return sqrt(a.x * a.x + a.y * a.y);
+  }
+
+#+END_SRC
+
+  The provided simulation code uses the *RDTSC* instruction to measure the performance of the
+  simulation routine for every iteration. The *RDTSC* instruction returns the number of cycles
+  elapsed starting from when the CPU was started. I nthis case, it used to evaluate the number
+  of cycles elapsed during the execution of the simulation function. This instruction is VERY dependent
+  on CPU frequency and can only be precise when measured target takes at least 500 cycles. 
+
+  In order for the measurements to be valid, you have to follow to following steps:
+
+  0 - If you are using a laptop, plug it to the wall socket
+  
+  1 - CPU governor and frequency
+
+  The CPU governor is the part of the OS that handles the dynamic frequency management of CPU cores.
+  There are multiple governors available under the two most common CPU drivers:
+
+     - The *=intel_pstate=* driver provides the following governors: *performance*, *powersave*   
+     - The *acpi-cpufreq* driver provides the following governors: *conservative*, *ondemand*, *userspace*,
+       *powersave*, *performance*, *schedutil*
+
+  In order to check the CPU driver and governor configurations, you can use the following command:
+
+  #+BEGIN_SRC sh
+
+    $ sudo cpupower frequency-info
+
+  #+END_SRC
+
+  This command will return, depending on your CPU driver, the following:
+
+  1.1 - The Intel Pstate driver
+
+  #+BEGIN_EXAMPLE
+
+  analyzing CPU 0:
+  driver: intel_pstate
+  CPUs which run at the same hardware frequency: 0
+  CPUs which need to have their frequency coordinated by software: 0
+  maximum transition latency:  Cannot determine or is not supported.
+  hardware limits: 800 MHz - 3.60 GHz
+  available cpufreq governors: performance powersave
+  current policy: frequency should be within 800 MHz and 3.60 GHz.
+                  The governor "powersave" may decide which speed to use
+                  within this range.
+  current CPU frequency: Unable to call hardware
+  current CPU frequency: 955 MHz (asserted by call to kernel)
+  boost state support:
+    Supported: no
+    Active: no
+     
+  #+END_EXAMPLE
+    
+  If this case, you should use the following command to set the CPU governor for all CPU cores:
+  
+  #+BEGIN_SRC sh
+
+    $ sudo cpupower -c all -g performance
+
+  #+END_SRC
+
+  1.2 - The ACPI driver
+
+  #+BEGIN_EXAMPLE
+  
+  analyzing CPU 0:
+  driver: acpi-cpufreq
+  CPUs which run at the same hardware frequency: 0
+  CPUs which need to have their frequency coordinated by software: 0
+  maximum transition latency:  Cannot determine or is not supported.
+  hardware limits: 2.20 GHz - 3.70 GHz
+  available frequency steps:  3.70 GHz, 3.20 GHz, 2.20 GHz
+  available cpufreq governors: conservative ondemand userspace powersave performance schedutil
+  current policy: frequency should be within 2.20 GHz and 3.70 GHz.
+                  The governor "schedutil" may decide which speed to use
+                  within this range.
+  current CPU frequency: 2.20 GHz (asserted by call to hardware)
+  boost state support:
+    Supported: yes
+    Active: yes
+    Boost States: 0
+    Total States: 3
+    Pstate-P0:  3700MHz
+    Pstate-P1:  3200MHz
+    Pstate-P2:  2200MHz
+
+  #+END_EXAMPLE
+
+  In this case, you should set the frequency of the target code to the maximum frequency
+  available in your CPU using the following command:
+
+  #+BEGIN_SRC sh
+
+    $ sudo cpupower -c all -g userspace
+    $ sudo cpupower -c TARGET_CORE -f MAX_FREQ
+
+  #+END_SRC
+
+  2 - Run the program using the *taskset* command to pin the process on the target core and redirect
+  the output containing the performance measurement into a file:
+
+  #+BEGIN_SRC sh
+
+    $ sudo taskset -c TARGET_CORE ./nbody0 > out0.dat
+
+  #+END_SRC
+
+  Once you have produced the multiple assembly versions (scalar and vector)of the specified C functions in the
+  N-Body simulation, you can draw comparison plots of the performance of each version using *GNUPlot*.
+
+  An example of a GNUPlot script to compare the C, SSE scalar, and SSE packed versions:
+  
+  #+BEGIN_EXAMPLE
+
+  set term png size 1900,1000
+
+  set grid
+
+  set ylabel "Latency in cycles"
+
+  set xlabel "Simulation iteration"
+
+  plot "out0.dat" w lp "C version", "out0_sd.dat" w lp "SSE scalar", "out0_pd.dat" w lp "SSE packed"
+  
+  #+END_EXAMPLE
+
+* Important note
+
+  If you are using a virtual machine, the performance measurements will most likely be wrong/invalid and
+  you won't be able to set the frequency/governor.
+  

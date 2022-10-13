@@ -1,0 +1,156 @@
+#+TITLE: x86 assembly programming (integers)
+#+AUTHOR: yaspr
+#+DATE: 2021
+
+* Introduction
+
+  The purpose of this lab is to get you acquainted and familiarized with the x86 assembly.
+  You are to convert 6 functions (compute kernels) written fully in C into their equivalent in x86 assembly.
+
+  The file *0.c* provided in the *examples* directory contains a set of examples showcasing the different ways you
+  can write inlined assembly within a C function definition.
+
+#+INCLUDE: "example/0.c" src c
+
+  From the example above, you can notive that when using the *=__asm__=* directive to introduce inlined assembly, 4 sections have
+  to be specified. The first section is the assembly code section. The second section is the *outputs* section that holds a list of registers
+  associated to C variables where the output of the assembly code should go. The third section is the *inputs* section that holds a list of registers
+  and their respective value source (C variable). The fourth section is the *clobber* section and is used to signal to the compiler the list
+  of registers explicitly used within the assembly code. More information is available here [[https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html]] and
+  here [[https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html#Clobbers-and-Scratch-Registers]].
+  
+* Intel vs. AT&T syntax
+
+  When writing inlined assembly code, there are two syntaxes available. The *Intel* syntax, where the destination operand is placed first and
+  the source operands to its right, and the *AT&T* syntax where the destination operand is placed last. By default, the *GCC* compiler collection
+  uses the *AT&T* syntax, but provides a directive to switch to the *Intel* syntax. 
+
+  Here is an example of the same assembly code using both syntaxes:
+
+#+BEGIN_SRC c
+
+    //Intel syntax (from the right to the left) 
+    __asm__ volatile(
+		     //Directive to signal to the compiler to use the Intel syntax without register prefixing 
+		     ".intel_syntax noprefix;\n"   
+
+		     "mov rax, 1;\n" //rax = 1
+		     "mov rbx, 2;\n" //rbx = 2
+
+		     "add rax, rbx;\n" //rax += rbx 
+
+		     ".att_syntax prefix"
+		     : //outputs
+
+		     : //inputs
+
+		     : //clobber
+		       "cc", "memory", "rax", "rbx");
+
+
+    //AT&T syntax (default) with prefixed registers (%%) (from the left to the right)
+    __asm__ volatile(
+		     "mov $1, %%rax;\n" //rax = 1
+		     "mov $2, %%rbx;\n" //rbx = 2
+
+		     "add %%rbx, %%rax;\n" //rax += rbx 
+
+		     : //outputs
+
+		     : //inputs
+
+		     : //clobber
+		       "cc", "memory", "rax", "rbx");
+
+#+END_SRC
+
+* x86 registers
+
+  x86 CPUs implement multiple registers. The following table lists all the available registers for programmers in 8-bit, 16-bit, 32-bit, and 64-bit modes: 
+  
+  | Name | Notes                                                                            | Type      | 64-bit long | 32-bit int | 16-bit short | 8-bit char |
+  |------+----------------------------------------------------------------------------------+-----------+-------------+------------+--------------+------------|
+  | rax  | Values are returned from functions in this register.                             | scratch   | rax         | eax        | ax           | ah and al  |
+  | rcx  | Typical scratch register. Some instructions also use it as a counter.            | scratch   | rcx         | ecx        | cx           | ch and cl  |
+  | rdx  |                                                                                  | scratch   | rdx         | edx        | dx           | dh and dl  |
+  | rbx  |                                                                                  | preserved | rbx         | ebx        | bx           | bh and bl  |
+  | rsp  | Stack pointer. Points to the top of the stack.                                   | preserved | rsp         | esp        | sp           | spl        |
+  | rbp  | Base pointer. Used to store the base of stack.                                   | preserved | rbp         | ebp        | bp           | bpl        |
+  | rsi  |                                                                                  | scratch   | rsi         | esi        | si           | sil        |
+  | rdi  |                                                                                  | scratch   | rdi         | edi        | di           | dil        |
+  | r8   |                                                                                  | scratch   | r8          | r8d        | r8w          | r8b        |
+  | r9   |                                                                                  | scratch   | r9          | r9d        | r9w          | r9b        |
+  | r10  |                                                                                  | scratch   | r10         | r10d       | r10w         | r10b       |
+  | r11  |                                                                                  | scratch   | r11         | r11d       | r11w         | r11b       |
+  | r12  |                                                                                  | preserved | r12         | r12d       | r12w         | r12b       |
+  | r13  |                                                                                  | preserved | r13         | r13d       | r13w         | r13b       |
+  | r14  |                                                                                  | preserved | r14         | r14d       | r14w         | r14b       |
+  | r15  |                                                                                  | preserved | r15         | r15d       | r15w         | r15b       |
+  | rip  | Instruction pointer. Contains the address of the currently executed instruction. | --------  | rip         | eip        | ip           | ---------  |
+
+
+  As you can see from the table above, these registers are available in various sizes:
+
+    - rax is a 64-bit register that was added back in 2003 when transitionning the x86 instruction set to to 64-bit mode (x86_64).
+    - eax is a 32-bit register added in 1985 when transitionning to 32-bit mode.
+    - ax is a 16-bit register that came with the 8086 CPU in 1979.
+    - al and ah are 8-bit registers representing the lower and higher halves of the ax register and date back to the 8008, 1972. 
+  
+  In order to convert values from one type/register size to another, you can use the following table (rax and rcx are only used here as examples):
+
+  |            | 64-bit rcx   | 32-bit ecx      | 16-bit cx     | 8-bit cl      | Notes                                                                          |
+  |------------+--------------+-----------------+---------------+---------------+--------------------------------------------------------------------------------|
+  | 64-bit rax | mov rax, rcx | movsxd rax, ecx | movsx rax, cx | movsx rax, cl | Writes to the whole register.                                                  |
+  | 32-bit eax | mov eax, ecx | mov eax, ecx    | movsx eax, cx | movsx eax, cl | Top half of the destination is zeroed.                                         |
+  | 16-bit ax  | mov ax, cx   | mov ax, cx      | mov ax, cx    | movsx ax, cl  | Affects only the lower 16 bits of the destination. The rest remains unchanged. |
+  | 8-bit al   | mov al, cl   | mov al, cl      | mov al, cl    | mov al, cl    | Affects only the lower 8 bits of the destination. The rest remains unchanged.  |
+
+* x86 instructions
+
+  A list of all x86 instructions with detailed descriptions is available here: https://www.felixcloutier.com/x86/
+
+  For this lab, you will only need the following instructions:
+
+#+BEGIN_EXAMPLE
+
+  mov
+  movb
+  movq
+  add
+  sub
+  cmp
+  je
+  jl
+  jnz
+  jmp
+  shr
+  xor
+  not
+  popcnt
+  imul
+  test
+  inc
+
+#+END_EXAMPLE
+  
+* Exercices
+
+  For each of the provided codes, you have to convert a specific C function into its equivalent x86 assembly code and add the proper test to the main function.
+  The assembly version must be functional and must return the same output as the C version.
+
+  Below are small descriptions of the provided codes with the target functions:
+  
+  - *1.c*: This code calculates the number of iterations necessary to converge using the Collatz conditions. You have Convert the '*collatz*' function into its equivalent in x86 assembly.
+  - *2.c*: This code returns the n-th number in the Fibonacci series. You have to convert the '*fibo*' function into its equivalent in x86 assembly.
+  - *3.c*: This code multiplies/scales the integer values stored in a array by a given scaling factor. You have to convert the '*scale*' function into x86 assembly.
+  - *4.c*: This code computes the Dot Product of two arrays of integers. You have to convert the '*dotprod*' function into x86 assembly.
+  - *5.c*: This code calculates the Hamming distance between two DNA sequences. You have to convert the '*hamming*' function in to x86 assembly. A sequence generator is provided along with
+    a couple of sequences (stored in the *=seq_in=* directory) for testing.
+  - *6.c*: This code generates the invert of a given PPM image. You have to convert the '*invert*' function into its equivalent x86 assembly. A set of images is provided in the *=ppm_in=*
+    directory. 
+         
+* Solutions
+
+  The provided *sol* directory contains solutions to all the exercises with an additional performance comparison for the different *hamming* code implementations.
+  
+  

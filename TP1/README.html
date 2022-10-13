@@ -1,0 +1,918 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-10-13 Thu 13:33 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>x86 assembly programming (integers)</title>
+<meta name="author" content="yaspr" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">x86 assembly programming (integers)</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org8adfb08">1. Introduction</a></li>
+<li><a href="#org8da6abe">2. Intel vs. AT&amp;T syntax</a></li>
+<li><a href="#org6228b57">3. x86 registers</a></li>
+<li><a href="#org476c8fb">4. x86 instructions</a></li>
+<li><a href="#org28632eb">5. Exercices</a></li>
+<li><a href="#org18b61d5">6. Solutions</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8adfb08" class="outline-2">
+<h2 id="org8adfb08"><span class="section-number-2">1.</span> Introduction</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+The purpose of this lab is to get you acquainted and familiarized with the x86 assembly.
+You are to convert 6 functions (compute kernels) written fully in C into their equivalent in x86 assembly.
+</p>
+
+<p>
+The file <b>0.c</b> provided in the <b>examples</b> directory contains a set of examples showcasing the different ways you
+can write inlined assembly within a C function definition.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c">/*
+  This code is meant as an example of to write inline x86 assembly code.
+
+  Compilation:
+      $ gcc -O1 0.c -o 0
+
+  Execution:
+      $ ./0 10 3
+
+  For more info about inline assembly:
+
+  https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html
+*/
+
+//
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+//Example of an addition without register labeling.
+//Registers are addressed using their positionning 0, 1, 2, ...
+int asm_iadd0(int a, int b)
+{
+  //
+  int s = 0;
+
+  __asm__ volatile(
+
+		   "add %1, %2;\n" //b += a
+
+		   "mov %2, %0;\n" //s = b
+
+		   : //outputs
+		     "=r" (s)  //%0 is the register's ID
+
+		   : //inputs
+		     "r" (a),  //%1
+		     "r" (b)   //%2
+
+		   : //clobber
+		     "cc", "memory");
+
+  return s;
+}
+
+//Using register labels
+int asm_iadd1(int a, int b)
+{
+  //
+  int s = 0;
+
+  __asm__ volatile(
+
+		   "add %[_a], %[_b];\n" //b += a
+
+		   "mov %[_b], %[_s];\n" //s = b
+
+		   : //outputs
+		     [_s] "=r" (s)  //value
+
+		   : //inputs
+		     [_a] "r" (a),  //value
+		     [_b] "r" (b)   //value
+
+		   : //clobber
+		     "cc", "memory");
+
+  return s;
+}
+
+//
+int asm_iadd2(int a, int b)
+{
+  //
+  int s = 0;
+
+  __asm__ volatile(
+
+		   "add %[_a], %[_b];\n" //b += a
+
+		   "mov %[_b], (%[_s]);\n" //*s = b
+
+		   : //outputs
+		   : //inputs
+		     [_a] "r" (a),  //value
+		     [_b] "r" (b),  //value
+		     [_s] "r" (&amp;s)  //pointer
+
+		   : //clobber
+		     "cc", "memory");
+
+  return s;
+}
+
+//
+int asm_imul(int a, int b)
+{
+  //
+  int m = 0;
+
+  __asm__ volatile (
+		    "imul %[_a], %[_b];\n"
+
+		    "mov %[_b], %[_m];\n"
+
+		    : //outputs
+		      [_m] "=r" (m)
+
+		    : //inputs
+		      [_a] "r" (a),  //value
+		      [_b] "r" (b)   //value
+
+		    : //clobber
+		      "cc", "memory");
+
+  return m;
+}
+
+//
+void asm_idiv(int a, int b, int *q, int *r)
+{
+  //Quotient
+  int qq = 0;
+
+  //Remainder
+  int rr = 0;
+
+  __asm__ volatile (
+		    "xor %%eax, %%eax;\n" //rax = 0
+		    "xor %%edx, %%edx;\n" //rdx = 0
+
+		    //Set eax value to a
+		    "mov %[_a], %%eax;\n"
+
+		    //Divides RAX by operand --&gt; RAX = a / b, RDX = a % b 
+		    "idiv %[_b];\n"
+
+		    //
+		    "mov %%eax, %[_q];\n"
+		    "mov %%edx, %[_r];\n"
+
+		    : //outputs
+		      [_q] "=r" (qq), //value
+		      [_r] "=r" (rr)  //value
+
+		    : //inputs
+		      [_a] "r" (a),  //value
+		      [_b] "r" (b)   //value
+
+		    : //clobber
+		      "cc", "memory", "eax", "edx");
+
+  //
+  *q = qq;
+  *r = rr;
+}
+
+//
+int asm_reduc(int *p, int n)
+{
+  //Accumulation variable
+  int r = 0;
+
+  //Array size in bytes
+  int s = sizeof(int) * n;
+
+  //
+  __asm__ volatile (
+		    //Initialize registers
+		    "xor %%eax, %%eax;\n" //eax = 0 --&gt; accumulation register
+		    "xor %%rcx, %%rcx;\n" //rcx = 0 --&gt; array element index
+
+		    //Set up loop label
+		    "1:;\n"
+
+		    //Load value from memory address (p + rcx) and add it to eax
+		    "add (%[_p], %%rcx), %%eax;\n"
+
+		   //Loop control
+		    "add $4, %%rcx;\n"     //Move rcx by 4 bytes - sizeof(int) - at each iteration
+		    "cmp %[_s], %%ecx;\n"  //Compare ecx to array size
+		    "jl 1b;\n"             //Jump to loop entry label if ecx &lt; array size
+
+		    "mov %%eax, %[_r];\n"  //Store final result in output variable
+
+		    : //outputs
+		      [_r] "=r" (r)
+
+		    : //inputs
+		      [_p] "r" (p),
+		      [_s] "r" (s)
+
+		    : //clobber
+		      "cc", "memory", "eax", "rcx"
+		    );
+
+  //
+  return r;
+}
+
+int C_reduc(int *p, int n)
+{
+  int r = 0;
+
+  for (int i = 0; i &lt; n; i++)
+    r += p[i];
+
+  return r;
+}
+
+//
+int main(int argc, char **argv)
+{
+  //
+  if (argc &lt; 3)
+    return printf("Usage: %s a b\n", argv[0]), 1;
+
+  //
+  int a = atoi(argv[1]);
+  int b = atoi(argv[2]);
+
+  int q = 0;
+  int r = 0;
+
+  //
+  printf("%d + %d = %d\n"  , a, b, asm_iadd0(a, b));
+  printf("%d + %d = %d\n"  , a, b, asm_iadd1(a, b));
+  printf("%d + %d = %d\n\n", a, b, asm_iadd2(a, b));
+
+  //
+  printf("%d * %d = %d\n\n", a, b, asm_imul(a, b));
+
+  //
+  asm_idiv(a, b, &amp;q, &amp;r);
+
+  printf("%d / %d =&gt; q: %d, r: %d\n\n", a, b, q, r);
+
+  //
+  int p[100];
+  int n = 100;
+
+  //Initialize array 
+  for (int i = 0; i &lt; n; i++)
+    p[i] = i + 1;
+
+  //
+  int r_asm = asm_reduc(p, 100);
+  int r_C   = C_reduc(p, n);
+
+  //
+  printf("reduc asm: %d\n", r_asm);
+  printf("reduc C  : %d\n", r_C);
+
+  //
+  return 0;
+}
+</pre>
+</div>
+
+<p>
+From the example above, you can notive that when using the <b><code>__asm__</code></b> directive to introduce inlined assembly, 4 sections have
+to be specified. The first section is the assembly code section. The second section is the <b>outputs</b> section that holds a list of registers
+associated to C variables where the output of the assembly code should go. The third section is the <b>inputs</b> section that holds a list of registers
+and their respective value source (C variable). The fourth section is the <b>clobber</b> section and is used to signal to the compiler the list
+of registers explicitly used within the assembly code. More information is available here <a href="https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html">https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html</a> and
+here <a href="https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html#Clobbers-and-Scratch-Registers">https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html#Clobbers-and-Scratch-Registers</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8da6abe" class="outline-2">
+<h2 id="org8da6abe"><span class="section-number-2">2.</span> Intel vs. AT&amp;T syntax</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+When writing inlined assembly code, there are two syntaxes available. The <b>Intel</b> syntax, where the destination operand is placed first and
+the source operands to its right, and the <b>AT&amp;T</b> syntax where the destination operand is placed last. By default, the <b>GCC</b> compiler collection
+uses the <b>AT&amp;T</b> syntax, but provides a directive to switch to the <b>Intel</b> syntax. 
+</p>
+
+<p>
+Here is an example of the same assembly code using both syntaxes:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c">
+//Intel syntax (from the right to the left) 
+__asm__ volatile(
+		 //Directive to signal to the compiler to use the Intel syntax without register prefixing 
+		 ".intel_syntax noprefix;\n"   
+
+		 "mov rax, 1;\n" //rax = 1
+		 "mov rbx, 2;\n" //rbx = 2
+
+		 "add rax, rbx;\n" //rax += rbx 
+
+		 ".att_syntax prefix"
+		 : //outputs
+
+		 : //inputs
+
+		 : //clobber
+		   "cc", "memory", "rax", "rbx");
+
+
+//AT&amp;T syntax (default) with prefixed registers (%%) (from the left to the right)
+__asm__ volatile(
+		 "mov $1, %%rax;\n" //rax = 1
+		 "mov $2, %%rbx;\n" //rbx = 2
+
+		 "add %%rbx, %%rax;\n" //rax += rbx 
+
+		 : //outputs
+
+		 : //inputs
+
+		 : //clobber
+		   "cc", "memory", "rax", "rbx");
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6228b57" class="outline-2">
+<h2 id="org6228b57"><span class="section-number-2">3.</span> x86 registers</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+x86 CPUs implement multiple registers. The following table lists all the available registers for programmers in 8-bit, 16-bit, 32-bit, and 64-bit modes: 
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Name</th>
+<th scope="col" class="org-left">Notes</th>
+<th scope="col" class="org-left">Type</th>
+<th scope="col" class="org-left">64-bit long</th>
+<th scope="col" class="org-left">32-bit int</th>
+<th scope="col" class="org-left">16-bit short</th>
+<th scope="col" class="org-left">8-bit char</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">rax</td>
+<td class="org-left">Values are returned from functions in this register.</td>
+<td class="org-left">scratch</td>
+<td class="org-left">rax</td>
+<td class="org-left">eax</td>
+<td class="org-left">ax</td>
+<td class="org-left">ah and al</td>
+</tr>
+
+<tr>
+<td class="org-left">rcx</td>
+<td class="org-left">Typical scratch register. Some instructions also use it as a counter.</td>
+<td class="org-left">scratch</td>
+<td class="org-left">rcx</td>
+<td class="org-left">ecx</td>
+<td class="org-left">cx</td>
+<td class="org-left">ch and cl</td>
+</tr>
+
+<tr>
+<td class="org-left">rdx</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">scratch</td>
+<td class="org-left">rdx</td>
+<td class="org-left">edx</td>
+<td class="org-left">dx</td>
+<td class="org-left">dh and dl</td>
+</tr>
+
+<tr>
+<td class="org-left">rbx</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">preserved</td>
+<td class="org-left">rbx</td>
+<td class="org-left">ebx</td>
+<td class="org-left">bx</td>
+<td class="org-left">bh and bl</td>
+</tr>
+
+<tr>
+<td class="org-left">rsp</td>
+<td class="org-left">Stack pointer. Points to the top of the stack.</td>
+<td class="org-left">preserved</td>
+<td class="org-left">rsp</td>
+<td class="org-left">esp</td>
+<td class="org-left">sp</td>
+<td class="org-left">spl</td>
+</tr>
+
+<tr>
+<td class="org-left">rbp</td>
+<td class="org-left">Base pointer. Used to store the base of stack.</td>
+<td class="org-left">preserved</td>
+<td class="org-left">rbp</td>
+<td class="org-left">ebp</td>
+<td class="org-left">bp</td>
+<td class="org-left">bpl</td>
+</tr>
+
+<tr>
+<td class="org-left">rsi</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">scratch</td>
+<td class="org-left">rsi</td>
+<td class="org-left">esi</td>
+<td class="org-left">si</td>
+<td class="org-left">sil</td>
+</tr>
+
+<tr>
+<td class="org-left">rdi</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">scratch</td>
+<td class="org-left">rdi</td>
+<td class="org-left">edi</td>
+<td class="org-left">di</td>
+<td class="org-left">dil</td>
+</tr>
+
+<tr>
+<td class="org-left">r8</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">scratch</td>
+<td class="org-left">r8</td>
+<td class="org-left">r8d</td>
+<td class="org-left">r8w</td>
+<td class="org-left">r8b</td>
+</tr>
+
+<tr>
+<td class="org-left">r9</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">scratch</td>
+<td class="org-left">r9</td>
+<td class="org-left">r9d</td>
+<td class="org-left">r9w</td>
+<td class="org-left">r9b</td>
+</tr>
+
+<tr>
+<td class="org-left">r10</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">scratch</td>
+<td class="org-left">r10</td>
+<td class="org-left">r10d</td>
+<td class="org-left">r10w</td>
+<td class="org-left">r10b</td>
+</tr>
+
+<tr>
+<td class="org-left">r11</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">scratch</td>
+<td class="org-left">r11</td>
+<td class="org-left">r11d</td>
+<td class="org-left">r11w</td>
+<td class="org-left">r11b</td>
+</tr>
+
+<tr>
+<td class="org-left">r12</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">preserved</td>
+<td class="org-left">r12</td>
+<td class="org-left">r12d</td>
+<td class="org-left">r12w</td>
+<td class="org-left">r12b</td>
+</tr>
+
+<tr>
+<td class="org-left">r13</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">preserved</td>
+<td class="org-left">r13</td>
+<td class="org-left">r13d</td>
+<td class="org-left">r13w</td>
+<td class="org-left">r13b</td>
+</tr>
+
+<tr>
+<td class="org-left">r14</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">preserved</td>
+<td class="org-left">r14</td>
+<td class="org-left">r14d</td>
+<td class="org-left">r14w</td>
+<td class="org-left">r14b</td>
+</tr>
+
+<tr>
+<td class="org-left">r15</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">preserved</td>
+<td class="org-left">r15</td>
+<td class="org-left">r15d</td>
+<td class="org-left">r15w</td>
+<td class="org-left">r15b</td>
+</tr>
+
+<tr>
+<td class="org-left">rip</td>
+<td class="org-left">Instruction pointer. Contains the address of the currently executed instruction.</td>
+<td class="org-left">--------</td>
+<td class="org-left">rip</td>
+<td class="org-left">eip</td>
+<td class="org-left">ip</td>
+<td class="org-left">---------</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>
+As you can see from the table above, these registers are available in various sizes:
+</p>
+
+<ul class="org-ul">
+<li>rax is a 64-bit register that was added back in 2003 when transitionning the x86 instruction set to to 64-bit mode (x86<sub>64</sub>).</li>
+<li>eax is a 32-bit register added in 1985 when transitionning to 32-bit mode.</li>
+<li>ax is a 16-bit register that came with the 8086 CPU in 1979.</li>
+<li>al and ah are 8-bit registers representing the lower and higher halves of the ax register and date back to the 8008, 1972.</li>
+</ul>
+
+<p>
+In order to convert values from one type/register size to another, you can use the following table (rax and rcx are only used here as examples):
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">&#xa0;</th>
+<th scope="col" class="org-left">64-bit rcx</th>
+<th scope="col" class="org-left">32-bit ecx</th>
+<th scope="col" class="org-left">16-bit cx</th>
+<th scope="col" class="org-left">8-bit cl</th>
+<th scope="col" class="org-left">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">64-bit rax</td>
+<td class="org-left">mov rax, rcx</td>
+<td class="org-left">movsxd rax, ecx</td>
+<td class="org-left">movsx rax, cx</td>
+<td class="org-left">movsx rax, cl</td>
+<td class="org-left">Writes to the whole register.</td>
+</tr>
+
+<tr>
+<td class="org-left">32-bit eax</td>
+<td class="org-left">mov eax, ecx</td>
+<td class="org-left">mov eax, ecx</td>
+<td class="org-left">movsx eax, cx</td>
+<td class="org-left">movsx eax, cl</td>
+<td class="org-left">Top half of the destination is zeroed.</td>
+</tr>
+
+<tr>
+<td class="org-left">16-bit ax</td>
+<td class="org-left">mov ax, cx</td>
+<td class="org-left">mov ax, cx</td>
+<td class="org-left">mov ax, cx</td>
+<td class="org-left">movsx ax, cl</td>
+<td class="org-left">Affects only the lower 16 bits of the destination. The rest remains unchanged.</td>
+</tr>
+
+<tr>
+<td class="org-left">8-bit al</td>
+<td class="org-left">mov al, cl</td>
+<td class="org-left">mov al, cl</td>
+<td class="org-left">mov al, cl</td>
+<td class="org-left">mov al, cl</td>
+<td class="org-left">Affects only the lower 8 bits of the destination. The rest remains unchanged.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org476c8fb" class="outline-2">
+<h2 id="org476c8fb"><span class="section-number-2">4.</span> x86 instructions</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+A list of all x86 instructions with detailed descriptions is available here: <a href="https://www.felixcloutier.com/x86/">https://www.felixcloutier.com/x86/</a>
+</p>
+
+<p>
+For this lab, you will only need the following instructions:
+</p>
+
+<pre class="example" id="orgbda4b8a">
+
+mov
+movb
+movq
+add
+sub
+cmp
+je
+jl
+jnz
+jmp
+shr
+xor
+not
+popcnt
+imul
+test
+inc
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org28632eb" class="outline-2">
+<h2 id="org28632eb"><span class="section-number-2">5.</span> Exercices</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+For each of the provided codes, you have to convert a specific C function into its equivalent x86 assembly code and add the proper test to the main function.
+The assembly version must be functional and must return the same output as the C version.
+</p>
+
+<p>
+Below are small descriptions of the provided codes with the target functions:
+</p>
+
+<ul class="org-ul">
+<li><b>1.c</b>: This code calculates the number of iterations necessary to converge using the Collatz conditions. You have Convert the '<b>collatz</b>' function into its equivalent in x86 assembly.</li>
+<li><b>2.c</b>: This code returns the n-th number in the Fibonacci series. You have to convert the '<b>fibo</b>' function into its equivalent in x86 assembly.</li>
+<li><b>3.c</b>: This code multiplies/scales the integer values stored in a array by a given scaling factor. You have to convert the '<b>scale</b>' function into x86 assembly.</li>
+<li><b>4.c</b>: This code computes the Dot Product of two arrays of integers. You have to convert the '<b>dotprod</b>' function into x86 assembly.</li>
+<li><b>5.c</b>: This code calculates the Hamming distance between two DNA sequences. You have to convert the '<b>hamming</b>' function in to x86 assembly. A sequence generator is provided along with
+a couple of sequences (stored in the <b><code>seq_in</code></b> directory) for testing.</li>
+<li><b>6.c</b>: This code generates the invert of a given PPM image. You have to convert the '<b>invert</b>' function into its equivalent x86 assembly. A set of images is provided in the <b><code>ppm_in</code></b>
+directory.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org18b61d5" class="outline-2">
+<h2 id="org18b61d5"><span class="section-number-2">6.</span> Solutions</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+The provided <b>sol</b> directory contains solutions to all the exercises with an additional performance comparison for the different <b>hamming</b> code implementations.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2021</p>
+<p class="author">Author: yaspr</p>
+<p class="date">Created: 2022-10-13 Thu 13:33</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

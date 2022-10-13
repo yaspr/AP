@@ -1,0 +1,774 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-10-13 Thu 13:37 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>x86 assembly programming (floating-point)</title>
+<meta name="author" content="yaspr" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">x86 assembly programming (floating-point)</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org82db462">1. Introduction</a></li>
+<li><a href="#org2f428aa">2. SSE, AVX2, and AVX512</a>
+<ul>
+<li><a href="#org9f6d405">2.1. SSE registers</a></li>
+<li><a href="#orga8ee2f0">2.2. AVX2</a></li>
+<li><a href="#org8dbb2e4">2.3. AVX512</a></li>
+</ul>
+</li>
+<li><a href="#org71afab0">3. Deliverable</a></li>
+<li><a href="#org6f9d1d3">4. Important note</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org82db462" class="outline-2">
+<h2 id="org82db462"><span class="section-number-2">1.</span> Introduction</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+The aim of this lab is to introduce the floating-point instructions
+available on the x86 architecture. You are given 6 examples showcasing
+the use of floating-point instructions in scalar and vector mode for 32-bit
+and 64-bit floating-point values.
+</p>
+
+<p>
+For this lab, you have to convert a given set of C functions within the <b>nbody0.c</b>
+simulation code into their respective assembly versions.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2f428aa" class="outline-2">
+<h2 id="org2f428aa"><span class="section-number-2">2.</span> SSE, AVX2, and AVX512</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+SSE (Streaming SIMD Extension) and AVX (Advanced Vector eXtension) are SIMD extensions
+added to the x86 instruction set in order to speed up certain categories of code patterns
+by introducing new instructions operating not only on scalars but on vectors (packets of elements).
+These two instruction sets provide both scalar and vector instructions covering the single and
+double precision floating-point formats.
+</p>
+
+<p>
+For this lab, only SSE instructions are needed.
+</p>
+
+<p>
+The SSE and AVX instructions have a predefined nomenclature depending on the scalar/vector nature
+of the operation as well as the data types. Scalar single precision operations are
+suffixed with <b>SS</b> (<b>Scalar Single precision</b>) and double precision operations with <b>SD</b>
+(<b>Scalar Double precision</b>). For packed, or vector, operations the suffix can be either <b>PS</b>
+(<b>Packed Single precision</b>) for single precision, or <b>PD</b> (<b>Packed Double precision</b>) for double
+precision. AVX instructions must start with a <b>V</b> (VEX instruction extension).
+</p>
+
+<p>
+The examples provided showcase multiple arithmetic and memory instructions using the previously described
+naming convention.
+</p>
+</div>
+
+<div id="outline-container-org9f6d405" class="outline-3">
+<h3 id="org9f6d405"><span class="section-number-3">2.1.</span> SSE registers</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+The SSE instruction set extends the x86 instruction set not only with new operations but also additional
+registers. Eight 128-bit (16 bytes) registers (from XMM0 to XMM7) are available for the SSE instructions
+to operate on. These registers can hold 4 single precision floating-point values, or 2 double precision
+floating-point values.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga8ee2f0" class="outline-3">
+<h3 id="orga8ee2f0"><span class="section-number-3">2.2.</span> AVX2</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+The AVX2 instruction set adds 16 256-bit (32 bytes) new registers to the mix: YMM0 to YMM15.
+The first 8 YMM registers overlap with the first 8 XMM registers.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8dbb2e4" class="outline-3">
+<h3 id="org8dbb2e4"><span class="section-number-3">2.3.</span> AVX512</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+The AVX512 instruction set adds 32 512-bit (64 bytes) registers. The first 16 registers overlap
+with the AVX2 registers. The table below covers register overlapping over all instruction sets:  
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Instruction set</th>
+<th scope="col" class="org-left">AVX512</th>
+<th scope="col" class="org-left">AVX2</th>
+<th scope="col" class="org-left">SSE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Bits</td>
+<td class="org-left">511..256</td>
+<td class="org-left">255..28</td>
+<td class="org-left">127..0</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM0</td>
+<td class="org-left">YMM0</td>
+<td class="org-left">XMM0</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM1</td>
+<td class="org-left">YMM1</td>
+<td class="org-left">XMM1</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM2</td>
+<td class="org-left">YMM2</td>
+<td class="org-left">XMM2</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM3</td>
+<td class="org-left">YMM3</td>
+<td class="org-left">XMM3</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM4</td>
+<td class="org-left">YMM4</td>
+<td class="org-left">XMM4</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM5</td>
+<td class="org-left">YMM5</td>
+<td class="org-left">XMM5</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM6</td>
+<td class="org-left">YMM6</td>
+<td class="org-left">XMM6</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM7</td>
+<td class="org-left">YMM7</td>
+<td class="org-left">XMM7</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM8</td>
+<td class="org-left">YMM8</td>
+<td class="org-left">XMM8</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM9</td>
+<td class="org-left">YMM9</td>
+<td class="org-left">XMM9</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM10</td>
+<td class="org-left">YMM10</td>
+<td class="org-left">XMM10</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM11</td>
+<td class="org-left">YMM11</td>
+<td class="org-left">XMM11</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM12</td>
+<td class="org-left">YMM12</td>
+<td class="org-left">XMM12</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM13</td>
+<td class="org-left">YMM13</td>
+<td class="org-left">XMM13</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM14</td>
+<td class="org-left">YMM14</td>
+<td class="org-left">XMM14</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM15</td>
+<td class="org-left">YMM15</td>
+<td class="org-left">XMM15</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM16</td>
+<td class="org-left">YMM16</td>
+<td class="org-left">XMM16</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM17</td>
+<td class="org-left">YMM17</td>
+<td class="org-left">XMM17</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM18</td>
+<td class="org-left">YMM18</td>
+<td class="org-left">XMM18</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM19</td>
+<td class="org-left">YMM19</td>
+<td class="org-left">XMM19</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM20</td>
+<td class="org-left">YMM20</td>
+<td class="org-left">XMM20</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM21</td>
+<td class="org-left">YMM21</td>
+<td class="org-left">XMM21</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM22</td>
+<td class="org-left">YMM22</td>
+<td class="org-left">XMM22</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM23</td>
+<td class="org-left">YMM23</td>
+<td class="org-left">XMM23</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM24</td>
+<td class="org-left">YMM24</td>
+<td class="org-left">XMM24</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM25</td>
+<td class="org-left">YMM25</td>
+<td class="org-left">XMM25</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM26</td>
+<td class="org-left">YMM26</td>
+<td class="org-left">XMM26</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM27</td>
+<td class="org-left">YMM27</td>
+<td class="org-left">XMM27</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM28</td>
+<td class="org-left">YMM28</td>
+<td class="org-left">XMM28</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM29</td>
+<td class="org-left">YMM29</td>
+<td class="org-left">XMM29</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM30</td>
+<td class="org-left">YMM30</td>
+<td class="org-left">XMM30</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ZMM31</td>
+<td class="org-left">YMM31</td>
+<td class="org-left">XMM31</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org71afab0" class="outline-2">
+<h2 id="org71afab0"><span class="section-number-2">3.</span> Deliverable</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+For this lab, you have to convert the following C functions in the N-Body interaction simulation
+provided in the <b>todo/nbody0.c</b> directory into multiple assembly versions using scalar and vector
+operations.  
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c">
+//
+vector add_vectors(vector a, vector b)
+{
+  vector c = { a.x + b.x, a.y + b.y };
+
+  return c;
+}
+
+//
+vector scale_vector(double b, vector a)
+{
+  vector c = { b * a.x, b * a.y };
+
+  return c;
+}
+
+//
+vector sub_vectors(vector a, vector b)
+{
+  vector c = { a.x - b.x, a.y - b.y };
+
+  return c;
+}
+
+//
+double mod(vector a)
+{
+  return sqrt(a.x * a.x + a.y * a.y);
+}
+
+</pre>
+</div>
+
+<p>
+The provided simulation code uses the <b>RDTSC</b> instruction to measure the performance of the
+simulation routine for every iteration. The <b>RDTSC</b> instruction returns the number of cycles
+elapsed starting from when the CPU was started. I nthis case, it used to evaluate the number
+of cycles elapsed during the execution of the simulation function. This instruction is VERY dependent
+on CPU frequency and can only be precise when measured target takes at least 500 cycles. 
+</p>
+
+<p>
+In order for the measurements to be valid, you have to follow to following steps:
+</p>
+
+<p>
+0 - If you are using a laptop, plug it to the wall socket
+</p>
+
+<p>
+1 - CPU governor and frequency
+</p>
+
+<p>
+The CPU governor is the part of the OS that handles the dynamic frequency management of CPU cores.
+There are multiple governors available under the two most common CPU drivers:
+</p>
+
+<ul class="org-ul">
+<li>The <b><code>intel_pstate</code></b> driver provides the following governors: <b>performance</b>, <b>powersave</b></li>
+<li>The <b>acpi-cpufreq</b> driver provides the following governors: <b>conservative</b>, <b>ondemand</b>, <b>userspace</b>,
+<b>powersave</b>, <b>performance</b>, <b>schedutil</b></li>
+</ul>
+
+<p>
+In order to check the CPU driver and governor configurations, you can use the following command:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">
+$ sudo cpupower frequency-info
+
+</pre>
+</div>
+
+<p>
+This command will return, depending on your CPU driver, the following:
+</p>
+
+<p>
+1.1 - The Intel Pstate driver
+</p>
+
+<pre class="example" id="orgc523e53">
+
+analyzing CPU 0:
+driver: intel_pstate
+CPUs which run at the same hardware frequency: 0
+CPUs which need to have their frequency coordinated by software: 0
+maximum transition latency:  Cannot determine or is not supported.
+hardware limits: 800 MHz - 3.60 GHz
+available cpufreq governors: performance powersave
+current policy: frequency should be within 800 MHz and 3.60 GHz.
+                The governor "powersave" may decide which speed to use
+                within this range.
+current CPU frequency: Unable to call hardware
+current CPU frequency: 955 MHz (asserted by call to kernel)
+boost state support:
+  Supported: no
+  Active: no
+
+</pre>
+
+<p>
+If this case, you should use the following command to set the CPU governor for all CPU cores:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">
+$ sudo cpupower -c all -g performance
+
+</pre>
+</div>
+
+<p>
+1.2 - The ACPI driver
+</p>
+
+<pre class="example" id="org5378988">
+
+analyzing CPU 0:
+driver: acpi-cpufreq
+CPUs which run at the same hardware frequency: 0
+CPUs which need to have their frequency coordinated by software: 0
+maximum transition latency:  Cannot determine or is not supported.
+hardware limits: 2.20 GHz - 3.70 GHz
+available frequency steps:  3.70 GHz, 3.20 GHz, 2.20 GHz
+available cpufreq governors: conservative ondemand userspace powersave performance schedutil
+current policy: frequency should be within 2.20 GHz and 3.70 GHz.
+                The governor "schedutil" may decide which speed to use
+                within this range.
+current CPU frequency: 2.20 GHz (asserted by call to hardware)
+boost state support:
+  Supported: yes
+  Active: yes
+  Boost States: 0
+  Total States: 3
+  Pstate-P0:  3700MHz
+  Pstate-P1:  3200MHz
+  Pstate-P2:  2200MHz
+
+</pre>
+
+<p>
+In this case, you should set the frequency of the target code to the maximum frequency
+available in your CPU using the following command:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">
+$ sudo cpupower -c all -g userspace
+$ sudo cpupower -c TARGET_CORE -f MAX_FREQ
+
+</pre>
+</div>
+
+<p>
+2 - Run the program using the <b>taskset</b> command to pin the process on the target core and redirect
+the output containing the performance measurement into a file:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">
+$ sudo taskset -c TARGET_CORE ./nbody0 &gt; out0.dat
+
+</pre>
+</div>
+
+<p>
+Once you have produced the multiple assembly versions (scalar and vector)of the specified C functions in the
+N-Body simulation, you can draw comparison plots of the performance of each version using <b>GNUPlot</b>.
+</p>
+
+<p>
+An example of a GNUPlot script to compare the C, SSE scalar, and SSE packed versions:
+</p>
+
+<pre class="example" id="org5e4e832">
+
+set term png size 1900,1000
+
+set grid
+
+set ylabel "Latency in cycles"
+
+set xlabel "Simulation iteration"
+
+plot "out0.dat" w lp "C version", "out0_sd.dat" w lp "SSE scalar", "out0_pd.dat" w lp "SSE packed"
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org6f9d1d3" class="outline-2">
+<h2 id="org6f9d1d3"><span class="section-number-2">4.</span> Important note</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+If you are using a virtual machine, the performance measurements will most likely be wrong/invalid and
+you won't be able to set the frequency/governor.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2021</p>
+<p class="author">Author: yaspr</p>
+<p class="date">Created: 2022-10-13 Thu 13:37</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
