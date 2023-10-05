@@ -26,60 +26,6 @@ unsigned long long collatz_c(unsigned long long n)
   return i;
 }
 
-/* // */
-/* unsigned long long collatz_asm(unsigned long long n) */
-/* { */
-/*   // */
-/*   unsigned long long i = 0; */
-
-/*   // */
-/*   __asm__ volatile ( */
-/* 		    ".intel_syntax noprefix;\n" */
-	  
-/* 		    "mov rbx, 1;\n" */
-/* 		    "cmp %1, 1;\n" */
-/* 		    "je loop_done1;\n" */
-	  
-/* 		    "loop_entry1:;\n" */
-	  
-/* 		    "test %1, 1;\n" */
-/* 		    "jnz odd;\n" */
-	  
-/* 		    //Even --> n = 2 x n */
-/* 		    "shr %1, 1;\n" //%0 <<= 1 --> %0 *= 2 */
-/* 		    "jmp loop_exit1;\n" */
-
-/* 		    //Odd --> n = 3 x n + 1 */
-/* 		    "odd:;\n"  */
-	  
-/* 		    "imul %1, 3;\n" //%0 *= 3 */
-/* 		    "inc %1;\n"     //%0 += 1 */
-	  
-/* 		    "loop_exit1:;\n" */
-	  
-/* 		    "inc rbx;\n"    //i++ */
-/* 		    "cmp %1, 1;\n"  //n == 1 */
-/* 		    "jne loop_entry1;\n" */
-
-/* 		    "loop_done1:;\n" */
-	  
-/* 		    "mov %0, rbx;\n" */
-	  
-/* 		    ".att_syntax prefix;\n" */
-	  
-/* 		    : //Outputs */
-/* 		      "=r" (i) */
-	    
-/* 		    : //Inputs */
-/* 		      "r" (n) */
-	    
-/* 		    : //Clobber */
-/* 		      "cc", "rbx"); */
-  
-/*   // */
-/*   return i; */
-/* } */
-
 //
 unsigned long long collatz_asm(unsigned long long n) {
 
@@ -119,7 +65,7 @@ unsigned long long collatz_asm(unsigned long long n) {
 		      [_v] "r"(n)
 		      
 		    : // clobber
-		      "cc", "memory", "eax", "rax", "rcx");
+		      "cc", "memory", "eax", "rax", "rcx", "rdx");
 
   return i;
 }

@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-10-13 Thu 14:03 -->
+<!-- 2023-10-05 Thu 13:26 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>x86 assembly programming (floating-point)</title>
+<title>x86 assembly programming: floating-point</title>
 <meta name="author" content="yaspr" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -191,32 +191,32 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
+  .org-svg { }
 </style>
 </head>
 <body>
 <div id="content" class="content">
-<h1 class="title">x86 assembly programming (floating-point)</h1>
+<h1 class="title">x86 assembly programming: floating-point</h1>
 <div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org78aa379">1. Introduction</a></li>
-<li><a href="#orga7cdcd0">2. SSE, AVX2, and AVX512</a>
+<li><a href="#orgc2764ff">1. Introduction</a></li>
+<li><a href="#org8dc46eb">2. SSE, AVX2, and AVX512</a>
 <ul>
-<li><a href="#orgc21cb78">2.1. SSE registers</a></li>
-<li><a href="#orgeedc541">2.2. AVX2</a></li>
-<li><a href="#orgbf9b2a1">2.3. AVX512</a></li>
+<li><a href="#orgc40d01d">2.1. SSE registers</a></li>
+<li><a href="#org1af7c3f">2.2. AVX2</a></li>
+<li><a href="#org2acc369">2.3. AVX512</a></li>
 </ul>
 </li>
-<li><a href="#orgfa82244">3. Deliverable</a></li>
-<li><a href="#org420da5e">4. Important note</a></li>
+<li><a href="#orged4039a">3. Deliverable</a></li>
+<li><a href="#org6262f12">4. Important note</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org78aa379" class="outline-2">
-<h2 id="org78aa379"><span class="section-number-2">1.</span> Introduction</h2>
+<div id="outline-container-orgc2764ff" class="outline-2">
+<h2 id="orgc2764ff"><span class="section-number-2">1.</span> Introduction</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 The aim of this lab is to introduce the floating-point instructions
@@ -232,8 +232,8 @@ simulation code into their respective assembly versions.
 </div>
 </div>
 
-<div id="outline-container-orga7cdcd0" class="outline-2">
-<h2 id="orga7cdcd0"><span class="section-number-2">2.</span> SSE, AVX2, and AVX512</h2>
+<div id="outline-container-org8dc46eb" class="outline-2">
+<h2 id="org8dc46eb"><span class="section-number-2">2.</span> SSE, AVX2, and AVX512</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 SSE (Streaming SIMD Extension) and AVX (Advanced Vector eXtension) are SIMD extensions
@@ -262,8 +262,8 @@ naming convention.
 </p>
 </div>
 
-<div id="outline-container-orgc21cb78" class="outline-3">
-<h3 id="orgc21cb78"><span class="section-number-3">2.1.</span> SSE registers</h3>
+<div id="outline-container-orgc40d01d" class="outline-3">
+<h3 id="orgc40d01d"><span class="section-number-3">2.1.</span> SSE registers</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 The SSE instruction set extends the x86 instruction set not only with new operations but also additional
@@ -274,8 +274,8 @@ floating-point values.
 </div>
 </div>
 
-<div id="outline-container-orgeedc541" class="outline-3">
-<h3 id="orgeedc541"><span class="section-number-3">2.2.</span> AVX2</h3>
+<div id="outline-container-org1af7c3f" class="outline-3">
+<h3 id="org1af7c3f"><span class="section-number-3">2.2.</span> AVX2</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 The AVX2 instruction set adds 16 256-bit (32 bytes) new registers to the mix: YMM0 to YMM15.
@@ -284,8 +284,8 @@ The first 8 YMM registers overlap with the first 8 XMM registers.
 </div>
 </div>
 
-<div id="outline-container-orgbf9b2a1" class="outline-3">
-<h3 id="orgbf9b2a1"><span class="section-number-3">2.3.</span> AVX512</h3>
+<div id="outline-container-org2acc369" class="outline-3">
+<h3 id="org2acc369"><span class="section-number-3">2.3.</span> AVX512</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 The AVX512 instruction set adds 32 512-bit (64 bytes) registers. The first 16 registers overlap
@@ -550,8 +550,8 @@ with the AVX2 registers. The table below covers register overlapping over all in
 </div>
 </div>
 
-<div id="outline-container-orgfa82244" class="outline-2">
-<h2 id="orgfa82244"><span class="section-number-2">3.</span> Deliverable</h2>
+<div id="outline-container-orged4039a" class="outline-2">
+<h2 id="orged4039a"><span class="section-number-2">3.</span> Deliverable</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 For this lab, you have to convert the following C functions in the N-Body interaction simulation
@@ -597,7 +597,7 @@ operations.
 <p>
 The provided simulation code uses the <b>RDTSC</b> instruction to measure the performance of the
 simulation routine for every iteration. The <b>RDTSC</b> instruction returns the number of cycles
-elapsed starting from when the CPU was started. I nthis case, it used to evaluate the number
+elapsed starting from when the CPU was started. In this case, it used to evaluate the number
 of cycles elapsed during the execution of the simulation function. This instruction is VERY dependent
 on CPU frequency and can only be precise when measured target takes at least 500 cycles. 
 </p>
@@ -644,7 +644,7 @@ This command will return, depending on your CPU driver, the following:
 1.1 - The Intel Pstate driver
 </p>
 
-<pre class="example" id="orgb75f0b6">
+<pre class="example" id="orgd21cb20">
 
 analyzing CPU 0:
 driver: intel_pstate
@@ -679,7 +679,7 @@ $ sudo cpupower -c all -g performance
 1.2 - The ACPI driver
 </p>
 
-<pre class="example" id="org41a1909">
+<pre class="example" id="org9e95da7">
 
 analyzing CPU 0:
 driver: acpi-cpufreq
@@ -738,7 +738,7 @@ N-Body simulation, you can draw comparison plots of the performance of each vers
 An example of a GNUPlot script to compare the C, SSE scalar, and SSE packed versions:
 </p>
 
-<pre class="example" id="orgd17bb64">
+<pre class="example" id="orge484997">
 
 set term png size 1900,1000
 
@@ -754,8 +754,8 @@ plot "out0.dat" w lp "C version", "out0_sd.dat" w lp "SSE scalar", "out0_pd.dat"
 </div>
 </div>
 
-<div id="outline-container-org420da5e" class="outline-2">
-<h2 id="org420da5e"><span class="section-number-2">4.</span> Important note</h2>
+<div id="outline-container-org6262f12" class="outline-2">
+<h2 id="org6262f12"><span class="section-number-2">4.</span> Important note</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 If you are using a virtual machine, the performance measurements will most likely be wrong/invalid and
@@ -765,9 +765,9 @@ you won't be able to set the frequency/governor.
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Date: 2021</p>
+<p class="date">Date: 2023</p>
 <p class="author">Author: yaspr</p>
-<p class="date">Created: 2022-10-13 Thu 14:03</p>
+<p class="date">Created: 2023-10-05 Thu 13:26</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

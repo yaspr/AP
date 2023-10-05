@@ -1,6 +1,6 @@
-#+TITLE: x86 assembly programming (floating-point)
+#+TITLE: x86 assembly programming: floating-point
 #+AUTHOR: yaspr
-#+DATE: 2021
+#+DATE: 2023
 
 * Introduction
 
@@ -128,7 +128,7 @@
 
   The provided simulation code uses the *RDTSC* instruction to measure the performance of the
   simulation routine for every iteration. The *RDTSC* instruction returns the number of cycles
-  elapsed starting from when the CPU was started. I nthis case, it used to evaluate the number
+  elapsed starting from when the CPU was started. In this case, it used to evaluate the number
   of cycles elapsed during the execution of the simulation function. This instruction is VERY dependent
   on CPU frequency and can only be precise when measured target takes at least 500 cycles. 
 

@@ -1,6 +1,6 @@
-#+TITLE: x86 assembly programming (integers)
+#+TITLE: x86 assembly programming: integers
 #+AUTHOR: yaspr
-#+DATE: 2021
+#+DATE: 2023
 
 * Introduction
 
@@ -12,7 +12,7 @@
 
 #+INCLUDE: "example/0.c" src c
 
-  From the example above, you can notive that when using the *=__asm__=* directive to introduce inlined assembly, 4 sections have
+  From the example above, you can notice that when using the *=__asm__=* directive to introduce inlined assembly, 4 sections have
   to be specified. The first section is the assembly code section. The second section is the *outputs* section that holds a list of registers
   associated to C variables where the output of the assembly code should go. The third section is the *inputs* section that holds a list of registers
   and their respective value source (C variable). The fourth section is the *clobber* section and is used to signal to the compiler the list

@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-10-13 Thu 14:01 -->
+<!-- 2023-10-05 Thu 13:22 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>x86 assembly programming (integers)</title>
+<title>x86 assembly programming: integers</title>
 <meta name="author" content="yaspr" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -191,28 +191,28 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
+  .org-svg { }
 </style>
 </head>
 <body>
 <div id="content" class="content">
-<h1 class="title">x86 assembly programming (integers)</h1>
+<h1 class="title">x86 assembly programming: integers</h1>
 <div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org0bb3fe9">1. Introduction</a></li>
-<li><a href="#orgdd49281">2. Intel vs. AT&amp;T syntax</a></li>
-<li><a href="#orga3a8175">3. x86 registers</a></li>
-<li><a href="#orgd5696bb">4. x86 instructions</a></li>
-<li><a href="#orgb03890c">5. Exercices</a></li>
-<li><a href="#org532f155">6. Solutions</a></li>
+<li><a href="#org1c133af">1. Introduction</a></li>
+<li><a href="#org1bf7416">2. Intel vs. AT&amp;T syntax</a></li>
+<li><a href="#org3b3fc46">3. x86 registers</a></li>
+<li><a href="#org93e8b88">4. x86 instructions</a></li>
+<li><a href="#org5a95442">5. Exercices</a></li>
+<li><a href="#org099908f">6. Solutions</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org0bb3fe9" class="outline-2">
-<h2 id="org0bb3fe9"><span class="section-number-2">1.</span> Introduction</h2>
+<div id="outline-container-org1c133af" class="outline-2">
+<h2 id="org1c133af"><span class="section-number-2">1.</span> Introduction</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 The purpose of this lab is to get you acquainted and familiarized with the x86 assembly.
@@ -484,7 +484,7 @@ can write inlined assembly within a C function definition.
 </div>
 
 <p>
-From the example above, you can notive that when using the <b><code>__asm__</code></b> directive to introduce inlined assembly, 4 sections have
+From the example above, you can notice that when using the <b><code>__asm__</code></b> directive to introduce inlined assembly, 4 sections have
 to be specified. The first section is the assembly code section. The second section is the <b>outputs</b> section that holds a list of registers
 associated to C variables where the output of the assembly code should go. The third section is the <b>inputs</b> section that holds a list of registers
 and their respective value source (C variable). The fourth section is the <b>clobber</b> section and is used to signal to the compiler the list
@@ -494,8 +494,8 @@ here <a href="https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html#Clobbers-and-
 </div>
 </div>
 
-<div id="outline-container-orgdd49281" class="outline-2">
-<h2 id="orgdd49281"><span class="section-number-2">2.</span> Intel vs. AT&amp;T syntax</h2>
+<div id="outline-container-org1bf7416" class="outline-2">
+<h2 id="org1bf7416"><span class="section-number-2">2.</span> Intel vs. AT&amp;T syntax</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 When writing inlined assembly code, there are two syntaxes available. The <b>Intel</b> syntax, where the destination operand is placed first and
@@ -547,8 +547,8 @@ Here is an example of the same assembly code using both syntaxes:
 </div>
 </div>
 
-<div id="outline-container-orga3a8175" class="outline-2">
-<h2 id="orga3a8175"><span class="section-number-2">3.</span> x86 registers</h2>
+<div id="outline-container-org3b3fc46" class="outline-2">
+<h2 id="org3b3fc46"><span class="section-number-2">3.</span> x86 registers</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 x86 CPUs implement multiple registers. The following table lists all the available registers for programmers in 8-bit, 16-bit, 32-bit, and 64-bit modes: 
@@ -839,8 +839,8 @@ In order to convert values from one type/register size to another, you can use t
 </div>
 </div>
 
-<div id="outline-container-orgd5696bb" class="outline-2">
-<h2 id="orgd5696bb"><span class="section-number-2">4.</span> x86 instructions</h2>
+<div id="outline-container-org93e8b88" class="outline-2">
+<h2 id="org93e8b88"><span class="section-number-2">4.</span> x86 instructions</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 A list of all x86 instructions with detailed descriptions is available here: <a href="https://www.felixcloutier.com/x86/">https://www.felixcloutier.com/x86/</a>
@@ -850,7 +850,7 @@ A list of all x86 instructions with detailed descriptions is available here: <a 
 For this lab, you will only need the following instructions:
 </p>
 
-<pre class="example" id="orgaaa66ce">
+<pre class="example" id="org8aa4748">
 
 mov
 movb
@@ -874,8 +874,8 @@ inc
 </div>
 </div>
 
-<div id="outline-container-orgb03890c" class="outline-2">
-<h2 id="orgb03890c"><span class="section-number-2">5.</span> Exercices</h2>
+<div id="outline-container-org5a95442" class="outline-2">
+<h2 id="org5a95442"><span class="section-number-2">5.</span> Exercices</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 For each of the provided codes, you have to convert a specific C function into its equivalent x86 assembly code and add the proper test to the main function.
@@ -899,8 +899,8 @@ directory.</li>
 </div>
 </div>
 
-<div id="outline-container-org532f155" class="outline-2">
-<h2 id="org532f155"><span class="section-number-2">6.</span> Solutions</h2>
+<div id="outline-container-org099908f" class="outline-2">
+<h2 id="org099908f"><span class="section-number-2">6.</span> Solutions</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 The provided <b>sol</b> directory contains solutions to all the exercises with an additional performance comparison for the different <b>hamming</b> code implementations.
@@ -909,9 +909,9 @@ The provided <b>sol</b> directory contains solutions to all the exercises with a
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Date: 2021</p>
+<p class="date">Date: 2023</p>
 <p class="author">Author: yaspr</p>
-<p class="date">Created: 2022-10-13 Thu 14:01</p>
+<p class="date">Created: 2023-10-05 Thu 13:22</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
