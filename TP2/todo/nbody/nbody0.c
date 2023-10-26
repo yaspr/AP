@@ -171,17 +171,31 @@ void simulate()
 int main(int argc, char **argv)
 {
   //
+  int with_graphics = 0;
+  
+  if (argc == 2)
+    {
+      if (!strncmp(argv[1], "--with-graphics", 15))
+	with_graphics = 1;
+      else
+	with_graphics = 0;
+    }
+  
+  //
   int i;
   unsigned char quit = 0;
   SDL_Event event;
   SDL_Window *window;
   SDL_Renderer *renderer;
-
+  
   srand(time(NULL));
   
   //
-  SDL_Init(SDL_INIT_VIDEO);
-  SDL_CreateWindowAndRenderer(800, 800, SDL_WINDOW_OPENGL, &window, &renderer);
+  if (with_graphics)
+    {
+      SDL_Init(SDL_INIT_VIDEO);
+      SDL_CreateWindowAndRenderer(800, 800, SDL_WINDOW_OPENGL, &window, &renderer);
+    }
   
   //
   init_system();
@@ -199,32 +213,38 @@ int main(int argc, char **argv)
       
       //
       printf("%d %lf\n", i, (after - before));
-      
-      SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-      SDL_RenderClear(renderer);
-      
-      for (int i = 0; i < nbodies; i++)
+
+      if (with_graphics)
 	{
-	  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-	  SDL_RenderDrawPoint(renderer, positions[i].x, positions[i].y);
-	}
+	  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	  SDL_RenderClear(renderer);
+
+	  for (int i = 0; i < nbodies; i++)
+	    {
+	      SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+	      SDL_RenderDrawPoint(renderer, positions[i].x, positions[i].y);
+	    }
       
-      SDL_RenderPresent(renderer);
-      
-      SDL_Delay(10);
-      
-      while (SDL_PollEvent(&event))
-	if (event.type == SDL_QUIT)
-	  quit = 1;
-	else
-	  if (event.type == SDL_KEYDOWN)
-	    if (event.key.keysym.sym == SDLK_q)
+	  SDL_RenderPresent(renderer);
+	  
+	  SDL_Delay(10);
+	  
+	  while (SDL_PollEvent(&event))
+	    if (event.type == SDL_QUIT)
 	      quit = 1;
+	    else
+	      if (event.type == SDL_KEYDOWN)
+		if (event.key.keysym.sym == SDLK_q)
+		  quit = 1;
+	}
     }
-  
-  SDL_DestroyRenderer(renderer);
-  SDL_DestroyWindow(window);
-  SDL_Quit();
+
+  if (with_graphics)
+    {
+      SDL_DestroyRenderer(renderer);
+      SDL_DestroyWindow(window);
+      SDL_Quit();
+    }
   
   return 0;
 }
