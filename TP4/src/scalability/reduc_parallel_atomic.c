@@ -63,74 +63,25 @@ f64 reduc_sequential(f64 *restrict a, u64 n)
 }
 
 //
-void *_reduc_(void *p)
+f64 reduc_openmp(f64 *restrict a, u64 n)
 {
-  thread_data_t *td = (thread_data_t *)p;
-  
-  td->r = reduc_sequential(td->a, td->n);
-  
-  return NULL;
-}
-
-//
-f64 reduc_parallel(f64 *restrict a, u64 n, u64 nt)
-{
-  //Reduction value
   f64 r = 0.0;
 
-  //Mask for thread pinning
-  cpu_set_t cpuset;
-  
-  //Allocating threads data structure
-  thread_data_t **td = malloc(sizeof(thread_data_t *) * nt);
+  //Create a parallel region
+#pragma omp parallel
+  {
+    //Private reduction variable for the thread 
+    f64 r_private = 0.0;
 
-  if (!td)
-    {
-      printf("Error: cannot allocate thread data\n");
-      exit(-1);
-    }
+    //Parallel loop
+#pragma omp for nowait
+    for (u64 i = 0; i < n; i++)
+      r_private += a[i];
 
-  //
-  u64 n_mod = (n % nt);
-  u64 n_div = (n / nt);
-  
-  //Creating and pinning threads
-  for (u64 i = 0; i < nt; i++)
-    {
-      td[i] = malloc(sizeof(thread_data_t));
-      
-      //Clear cpuset mask
-      CPU_ZERO(&cpuset);
-      
-      //Setting up the target CPU core
-      CPU_SET(i, &cpuset);
-
-      //Number of elements per thread. 
-      td[i]->n = n_div + (n_mod != 0);
-      td[i]->a = a + (i * td[i]->n);
-      td[i]->r = 0.0;
-      
-      //Create the thread
-      pthread_create(&td[i]->id, NULL, _reduc_, td[i]);
-      
-      //Pin the thread on the previously set up core 
-      pthread_setaffinity_np(td[i]->id, sizeof(cpuset), &cpuset);
-
-      if (n_mod)
-	n_mod--;
-    }
-  
-  //Finilizing
-  for (u64 i = 0; i < nt; i++)
-    {
-      pthread_join(td[i]->id, NULL);
-
-      r += td[i]->r;
-      
-      free(td[i]);
-    }
-  
-  free(td);
+    //Sequential final sum 
+    #pragma omp atomic
+    r += r_private;
+  }
   
   return r;
 }
@@ -199,12 +150,14 @@ int main(int argc, char **argv)
       
       init(a, n, 'c');
       
+      omp_set_num_threads(i + 1);
+      
       //
       do
 	{
 	  t1 = omp_get_wtime();
 	  
-	  result = reduc_parallel(a, n, i + 1);
+	  result = reduc_openmp(a, n);
 	  
 	  t2 = omp_get_wtime();
 	  

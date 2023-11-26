@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <emmintrin.h>
+#include <pmmintrin.h>
 
 //
 #include "types.h"
@@ -62,77 +64,49 @@ f64 reduc_sequential(f64 *restrict a, u64 n)
   return r;
 }
 
+#define ROUND_DOWN(x, s) ((x) & ~((s)-1))
+
 //
-void *_reduc_(void *p)
+f64 sum_vector2(f64 *restrict a, u64 n)
 {
-  thread_data_t *td = (thread_data_t *)p;
+  __m128d sum2 = _mm_set1_pd(0.0f);
   
-  td->r = reduc_sequential(td->a, td->n);
+  u64 i = 0;
+
+  for(; i < ROUND_DOWN(n, 2); i += 2)
+    {
+      __m128d a2 = _mm_load_pd(a + i);
+      sum2 = _mm_add_pd(sum2, a2);
+    }
   
-  return NULL;
+  __m128d t1 = _mm_hadd_pd(sum2, sum2);
+  f64 sum = _mm_cvtsd_f64(t1);
+  
+  for(; i < n; i++) 
+    sum += a[i];
+  
+  return sum;
 }
 
 //
-f64 reduc_parallel(f64 *restrict a, u64 n, u64 nt)
+f64 reduc_openmp(f64 *restrict a, u64 n, u64 nt)
 {
-  //Reduction value
-  f64 r = 0.0;
-
-  //Mask for thread pinning
-  cpu_set_t cpuset;
+  f64 suma[nt];
+  const u64 offset = ROUND_DOWN(n / nt, nt);
   
-  //Allocating threads data structure
-  thread_data_t **td = malloc(sizeof(thread_data_t *) * nt);
-
-  if (!td)
-    {
-      printf("Error: cannot allocate thread data\n");
-      exit(-1);
-    }
-
-  //
-  u64 n_mod = (n % nt);
-  u64 n_div = (n / nt);
+#pragma omp parallel for num_threads(nt) 
+  for(u64 i = 0; i < nt; i++)
+    suma[i] = sum_vector2(&a[i * offset], offset);
   
-  //Creating and pinning threads
-  for (u64 i = 0; i < nt; i++)
-    {
-      td[i] = malloc(sizeof(thread_data_t));
-      
-      //Clear cpuset mask
-      CPU_ZERO(&cpuset);
-      
-      //Setting up the target CPU core
-      CPU_SET(i, &cpuset);
-
-      //Number of elements per thread. 
-      td[i]->n = n_div + (n_mod != 0);
-      td[i]->a = a + (i * td[i]->n);
-      td[i]->r = 0.0;
-      
-      //Create the thread
-      pthread_create(&td[i]->id, NULL, _reduc_, td[i]);
-      
-      //Pin the thread on the previously set up core 
-      pthread_setaffinity_np(td[i]->id, sizeof(cpuset), &cpuset);
-
-      if (n_mod)
-	n_mod--;
-    }
+  f64 sum = 0.0f;
   
-  //Finilizing
-  for (u64 i = 0; i < nt; i++)
-    {
-      pthread_join(td[i]->id, NULL);
-
-      r += td[i]->r;
-      
-      free(td[i]);
-    }
+  for(u64 i = 0; i < nt; i++)
+    sum += suma[i]; 
   
-  free(td);
+  for(u64 i = nt * offset; i < n; i++)
+    sum += a[i];
   
-  return r;
+  return sum;    
 }
 
 //
@@ -198,13 +172,13 @@ int main(int argc, char **argv)
       f64 *restrict a = aligned_alloc(64, s);
       
       init(a, n, 'c');
-      
+            
       //
       do
 	{
 	  t1 = omp_get_wtime();
 	  
-	  result = reduc_parallel(a, n, i + 1);
+	  result = reduc_openmp(a, n, nt);
 	  
 	  t2 = omp_get_wtime();
 	  

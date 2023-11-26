@@ -22,14 +22,11 @@ typedef struct thread_data_s {
 
   //Array of elements
   f64 *restrict a;
+
+  //Partial sum
+  f64 r;
   
 } thread_data_t;
-
-//
-pthread_mutex_t mutex;
-
-//Variable shared by all threads to perform the reduction
-f64 shared_r = 0.0;
 
 //
 void init(f64 *restrict a, u64 n, u8 type)
@@ -66,30 +63,68 @@ f64 reduc_sequential(f64 *restrict a, u64 n)
 }
 
 //
+f64 reduc_AVX(f64 *restrict a, u64 n)
+{
+  u64 s = sizeof(f64) * (n - (n & 3));
+  f64 r[4] __attribute__((aligned(64)));
+
+  __asm__ volatile (
+		    "xor %%rcx, %%rcx;\n"
+		    
+		    "vxorpd %%ymm0, %%ymm0, %%ymm0;\n"
+		    "vxorpd %%ymm1, %%ymm1, %%ymm1;\n"
+		    "vxorpd %%ymm2, %%ymm2, %%ymm2;\n"
+		    "vxorpd %%ymm3, %%ymm3, %%ymm3;\n"
+		    
+		    "1:;\n"
+		    "vaddpd   (%[_a], %%rcx), %%ymm0, %%ymm0;\n"
+		    "vaddpd 32(%[_a], %%rcx), %%ymm1, %%ymm1;\n"
+		    "vaddpd 64(%[_a], %%rcx), %%ymm2, %%ymm2;\n"
+		    "vaddpd 96(%[_a], %%rcx), %%ymm3, %%ymm3;\n"
+		    
+		    "add $128, %%rcx;\n"
+		    "cmp %[_s], %%rcx;\n"
+		    "jl 1b;\n"
+		    
+		    "vaddpd %%ymm1, %%ymm0, %%ymm0;\n"
+		    "vaddpd %%ymm3, %%ymm2, %%ymm2;\n"
+		    "vaddpd %%ymm2, %%ymm0, %%ymm0;\n"
+
+		    "vmovapd %%ymm0, (%[_r]);\n"
+		    
+		    :
+		    
+		    :
+		    [_a] "r" (a),
+		    [_s] "r" (s),
+		    [_r] "r" (r)
+		    
+		    :
+		    "cc", "memory", "rcx",
+		    "ymm0", "ymm1", "ymm2", "ymm3");
+
+  for (u64 i = (n - (n & 3)); i < n; i++)
+    r[0] += a[i];
+  
+  return (r[0] + r[1] + r[2] + r[3]);
+}
+
+//
 void *_reduc_(void *p)
 {
   thread_data_t *td = (thread_data_t *)p;
-
-  //Lock access to the shared variable
-  pthread_mutex_lock(&mutex);
-
-  //Perform the sum in the shared variable
-  for (u64 i = 0; i < td->n; i++)
-    shared_r += td->a[i];
   
-  //Unlock to allow other threads to access the shared variable
-  pthread_mutex_unlock(&mutex);
+  td->r = reduc_AVX(td->a, td->n);
   
-  //unlock
   return NULL;
 }
 
 //
 f64 reduc_parallel(f64 *restrict a, u64 n, u64 nt)
 {
-  //
+  //Reduction value
   f64 r = 0.0;
-  
+
   //Mask for thread pinning
   cpu_set_t cpuset;
   
@@ -103,8 +138,8 @@ f64 reduc_parallel(f64 *restrict a, u64 n, u64 nt)
     }
 
   //
-  f64 n_mod = (n % nt);
-  f64 n_div = (n / nt);
+  u64 n_mod = (n % nt);
+  u64 n_div = (n / nt);
   
   //Creating and pinning threads
   for (u64 i = 0; i < nt; i++)
@@ -120,10 +155,11 @@ f64 reduc_parallel(f64 *restrict a, u64 n, u64 nt)
       //Number of elements per thread. 
       td[i]->n = n_div + (n_mod != 0);
       td[i]->a = a + (i * td[i]->n);
+      td[i]->r = 0.0;
       
       //Create the thread
       pthread_create(&td[i]->id, NULL, _reduc_, td[i]);
-
+      
       //Pin the thread on the previously set up core 
       pthread_setaffinity_np(td[i]->id, sizeof(cpuset), &cpuset);
 
@@ -133,15 +169,15 @@ f64 reduc_parallel(f64 *restrict a, u64 n, u64 nt)
   
   //Finilizing
   for (u64 i = 0; i < nt; i++)
-    {    
+    {
       pthread_join(td[i]->id, NULL);
 
+      r += td[i]->r;
+      
       free(td[i]);
     }
-
-  free(td);
   
-  r = shared_r;
+  free(td);
   
   return r;
 }
@@ -152,7 +188,7 @@ int main(int argc, char **argv)
   //
   if (argc < 3)
     return printf("Usage: %s [n] [t]\n", argv[0]), -1;
-
+  
   u64 n = atoll(argv[1]);
   u64 nt = atoll(argv[2]);
 
@@ -168,8 +204,9 @@ int main(int argc, char **argv)
       exit(-1);
     }
 
-  pthread_mutex_init(&mutex, NULL);
-    
+  //
+  f64 t1 = 0.0, t2 = 0.0;
+  
   //Size in bytes
   u64 s = n * sizeof(f64);
 
@@ -179,48 +216,75 @@ int main(int argc, char **argv)
 	 s >> 10,
 	 s >> 20,
 	 s >> 30);
-
-  //
-  f64 t1 = 0.0, t2 = 0.0;
   
   //
-  f64 *restrict a = aligned_alloc(64, s);
-
-  init(a, n, 'c');
-
-  //Sequential
-  t1 = omp_get_wtime();
-  
-  f64 rs  = reduc_sequential(a, n);
-
-  t2 = omp_get_wtime();
-
-  f64 elapsed_s = (f64)(t2 - t1);
-
-  //Parallel
-  t1 = omp_get_wtime();
-  
-  f64 rp  = reduc_parallel(a, n, nt);
-
-  t2 = omp_get_wtime();
-
-  f64 elapsed_p = (f64)(t2 - t1);
-    
-  printf("\nsequential result : %lf\n", rs);
-  printf("sequential elapsed: %.3lf s\n", elapsed_s);
-  printf("\nparallel result   : %lf\n", rp);
-  printf("parallel elapsed  : %.3lf s\n", elapsed_p);
-  
-  f64 delta = fabs(rs - rp);
-  f64 speedup = (elapsed_s / elapsed_p);
-  
-  printf("\nresults delta      : %lf (%e)\n", delta, delta);
-  printf("speedup           : %.3lf\n", speedup);
+  f64 result      = 0.0;
+  f64 elapsed     = 0.0;
   
   //
-  free(a);
+  f64 *times     = malloc(sizeof(f64) * nt);
 
-  pthread_mutex_destroy(&mutex);
+  if (!times)
+    {
+      printf("Error: cannot allocate micros array\n");
+      exit(-1);
+    }
+  
+  f64 *reductions = malloc(sizeof(f64) * nt);
+
+  if (!reductions)
+    {
+      printf("Error: cannot allocate reductions array\n");
+      exit(-1);
+    }
+
+  //Running scalability measurements
+  for (u64 i = 0; i < nt; i++)
+    {      
+      //
+      f64 *restrict a = aligned_alloc(64, s);
+      
+      init(a, n, 'c');
+      
+      //
+      do
+	{
+	  t1 = omp_get_wtime();
+	  
+	  result = reduc_parallel(a, n, i + 1);
+	  
+	  t2 = omp_get_wtime();
+	  
+	  elapsed = (f64)(t2 - t1);
+	}
+      while (elapsed <= 0.0);
+      
+      //
+      times[i]      = elapsed;
+      reductions[i] = result;
+      
+      //
+      free(a);
+      
+      printf("# threads: %3llu; # elements/thread: %18llu; elapsed: %13.5lf s; result: %lf\n",
+	     i + 1,
+	     n / (i + 1),
+	     times[i],
+	     reductions[i]);
+    }
+
+  //
+  for (u64 i = 1; i < nt; i++)
+    {
+      f64 delta = fabs(reductions[0] - reductions[i]);
+      f64 speedup = times[0] / times[i];
+      
+      printf("delta(0, %llu) = %lf (%e); speedup: %.3lf\n", i, delta, delta, speedup);
+    }
+  
+  //
+  free(times);
+  free(reductions);
   
   //
   return 0;
