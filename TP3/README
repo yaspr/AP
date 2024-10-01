@@ -1,0 +1,9 @@
+- Introduce parallelism concepts: threads, mutex, barriers, conditions, scalability, ...
+- Introduce PThreads
+- Work:
+	- Implement a reduction using PThreads
+	  - Local thread reduction variable --> final reduction during the join
+	  - Using a mutex for synchronizing the threads
+	- Implement a reduction using SSE or AVX and PThreads
+	- Compare the performances of all versions
+	- Evaluate the scalability of the reduction implementations

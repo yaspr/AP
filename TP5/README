@@ -1,0 +1,8 @@
+- Introduce caches
+- Introduce cache optimizations: tiling, blocking, and prefetching
+- Work:
+	- Implement a dgemm in C and measure its performance
+	- Add a new version with blocking and compare the performances
+	- Add a new version with tiling and compare the performances
+	- Use other compilers and compare the performances
+	
