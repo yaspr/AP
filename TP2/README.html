@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-10-05 Thu 13:26 -->
+<!-- 2024-10-02 Wed 13:49 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>x86 assembly programming: floating-point</title>
@@ -201,22 +201,22 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgc2764ff">1. Introduction</a></li>
-<li><a href="#org8dc46eb">2. SSE, AVX2, and AVX512</a>
+<li><a href="#org2ef32e3">1. Introduction</a></li>
+<li><a href="#org317886a">2. SSE, AVX2, and AVX512</a>
 <ul>
-<li><a href="#orgc40d01d">2.1. SSE registers</a></li>
-<li><a href="#org1af7c3f">2.2. AVX2</a></li>
-<li><a href="#org2acc369">2.3. AVX512</a></li>
+<li><a href="#org7908014">2.1. SSE registers</a></li>
+<li><a href="#org8ce2051">2.2. AVX2</a></li>
+<li><a href="#orgb4f039f">2.3. AVX512</a></li>
 </ul>
 </li>
-<li><a href="#orged4039a">3. Deliverable</a></li>
-<li><a href="#org6262f12">4. Important note</a></li>
+<li><a href="#orgdca625c">3. Deliverable</a></li>
+<li><a href="#orgc9a27b0">4. Important note</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgc2764ff" class="outline-2">
-<h2 id="orgc2764ff"><span class="section-number-2">1.</span> Introduction</h2>
+<div id="outline-container-org2ef32e3" class="outline-2">
+<h2 id="org2ef32e3"><span class="section-number-2">1.</span> Introduction</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 The aim of this lab is to introduce the floating-point instructions
@@ -232,8 +232,8 @@ simulation code into their respective assembly versions.
 </div>
 </div>
 
-<div id="outline-container-org8dc46eb" class="outline-2">
-<h2 id="org8dc46eb"><span class="section-number-2">2.</span> SSE, AVX2, and AVX512</h2>
+<div id="outline-container-org317886a" class="outline-2">
+<h2 id="org317886a"><span class="section-number-2">2.</span> SSE, AVX2, and AVX512</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 SSE (Streaming SIMD Extension) and AVX (Advanced Vector eXtension) are SIMD extensions
@@ -262,8 +262,8 @@ naming convention.
 </p>
 </div>
 
-<div id="outline-container-orgc40d01d" class="outline-3">
-<h3 id="orgc40d01d"><span class="section-number-3">2.1.</span> SSE registers</h3>
+<div id="outline-container-org7908014" class="outline-3">
+<h3 id="org7908014"><span class="section-number-3">2.1.</span> SSE registers</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 The SSE instruction set extends the x86 instruction set not only with new operations but also additional
@@ -274,8 +274,8 @@ floating-point values.
 </div>
 </div>
 
-<div id="outline-container-org1af7c3f" class="outline-3">
-<h3 id="org1af7c3f"><span class="section-number-3">2.2.</span> AVX2</h3>
+<div id="outline-container-org8ce2051" class="outline-3">
+<h3 id="org8ce2051"><span class="section-number-3">2.2.</span> AVX2</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 The AVX2 instruction set adds 16 256-bit (32 bytes) new registers to the mix: YMM0 to YMM15.
@@ -284,8 +284,8 @@ The first 8 YMM registers overlap with the first 8 XMM registers.
 </div>
 </div>
 
-<div id="outline-container-org2acc369" class="outline-3">
-<h3 id="org2acc369"><span class="section-number-3">2.3.</span> AVX512</h3>
+<div id="outline-container-orgb4f039f" class="outline-3">
+<h3 id="orgb4f039f"><span class="section-number-3">2.3.</span> AVX512</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 The AVX512 instruction set adds 32 512-bit (64 bytes) registers. The first 16 registers overlap
@@ -550,45 +550,45 @@ with the AVX2 registers. The table below covers register overlapping over all in
 </div>
 </div>
 
-<div id="outline-container-orged4039a" class="outline-2">
-<h2 id="orged4039a"><span class="section-number-2">3.</span> Deliverable</h2>
+<div id="outline-container-orgdca625c" class="outline-2">
+<h2 id="orgdca625c"><span class="section-number-2">3.</span> Deliverable</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 For this lab, you have to convert the following C functions in the N-Body interaction simulation
-provided in the <b>todo/nbody0.c</b> directory into multiple assembly versions using scalar and vector
+provided in the <b>todo/nbody0.c</b> file into multiple assembly versions using scalar and vector
 operations.  
 </p>
 
 <div class="org-src-container">
 <pre class="src src-c">
-<span style="color: #7f7f7f;">//</span>
-<span style="color: #98f5ff;">vector</span> <span style="color: #daa520;">add_vectors</span>(<span style="color: #98f5ff;">vector</span> <span style="color: #4eee94;">a</span>, <span style="color: #98f5ff;">vector</span> <span style="color: #4eee94;">b</span>)
+<span style="color: #b22222;">//</span>
+<span style="color: #228b22;">vector</span> <span style="color: #0000ff;">add_vectors</span>(<span style="color: #228b22;">vector</span> <span style="color: #a0522d;">a</span>, <span style="color: #228b22;">vector</span> <span style="color: #a0522d;">b</span>)
 {
-  <span style="color: #98f5ff;">vector</span> <span style="color: #4eee94;">c</span> = { a.x + b.x, a.y + b.y };
+  <span style="color: #228b22;">vector</span> <span style="color: #a0522d;">c</span> = { a.x + b.x, a.y + b.y };
 
-  <span style="color: #00bfff;">return</span> c;
+  <span style="color: #a020f0;">return</span> c;
 }
 
-<span style="color: #7f7f7f;">//</span>
-<span style="color: #98f5ff;">vector</span> <span style="color: #daa520;">scale_vector</span>(<span style="color: #98f5ff;">double</span> <span style="color: #4eee94;">b</span>, <span style="color: #98f5ff;">vector</span> <span style="color: #4eee94;">a</span>)
+<span style="color: #b22222;">//</span>
+<span style="color: #228b22;">vector</span> <span style="color: #0000ff;">scale_vector</span>(<span style="color: #228b22;">double</span> <span style="color: #a0522d;">b</span>, <span style="color: #228b22;">vector</span> <span style="color: #a0522d;">a</span>)
 {
-  <span style="color: #98f5ff;">vector</span> <span style="color: #4eee94;">c</span> = { b * a.x, b * a.y };
+  <span style="color: #228b22;">vector</span> <span style="color: #a0522d;">c</span> = { b * a.x, b * a.y };
 
-  <span style="color: #00bfff;">return</span> c;
+  <span style="color: #a020f0;">return</span> c;
 }
 
-<span style="color: #7f7f7f;">//</span>
-<span style="color: #98f5ff;">vector</span> <span style="color: #daa520;">sub_vectors</span>(<span style="color: #98f5ff;">vector</span> <span style="color: #4eee94;">a</span>, <span style="color: #98f5ff;">vector</span> <span style="color: #4eee94;">b</span>)
+<span style="color: #b22222;">//</span>
+<span style="color: #228b22;">vector</span> <span style="color: #0000ff;">sub_vectors</span>(<span style="color: #228b22;">vector</span> <span style="color: #a0522d;">a</span>, <span style="color: #228b22;">vector</span> <span style="color: #a0522d;">b</span>)
 {
-  <span style="color: #98f5ff;">vector</span> <span style="color: #4eee94;">c</span> = { a.x - b.x, a.y - b.y };
+  <span style="color: #228b22;">vector</span> <span style="color: #a0522d;">c</span> = { a.x - b.x, a.y - b.y };
 
-  <span style="color: #00bfff;">return</span> c;
+  <span style="color: #a020f0;">return</span> c;
 }
 
-<span style="color: #7f7f7f;">//</span>
-<span style="color: #98f5ff;">double</span> <span style="color: #daa520;">mod</span>(<span style="color: #98f5ff;">vector</span> <span style="color: #4eee94;">a</span>)
+<span style="color: #b22222;">//</span>
+<span style="color: #228b22;">double</span> <span style="color: #0000ff;">mod</span>(<span style="color: #228b22;">vector</span> <span style="color: #a0522d;">a</span>)
 {
-  <span style="color: #00bfff;">return</span> sqrt(a.x * a.x + a.y * a.y);
+  <span style="color: #a020f0;">return</span> sqrt(a.x * a.x + a.y * a.y);
 }
 
 </pre>
@@ -597,9 +597,9 @@ operations.
 <p>
 The provided simulation code uses the <b>RDTSC</b> instruction to measure the performance of the
 simulation routine for every iteration. The <b>RDTSC</b> instruction returns the number of cycles
-elapsed starting from when the CPU was started. In this case, it used to evaluate the number
+elapsed starting from when the CPU was turned on. In this case, it is used to evaluate the number
 of cycles elapsed during the execution of the simulation function. This instruction is VERY dependent
-on CPU frequency and can only be precise when measured target takes at least 500 cycles. 
+on CPU frequency and can only be precise when the measured target code takes at least 500 cycles. 
 </p>
 
 <p>
@@ -607,11 +607,11 @@ In order for the measurements to be valid, you have to follow to following steps
 </p>
 
 <p>
-0 - If you are using a laptop, plug it to the wall socket
+0 - If you are using a laptop, plug it to the wall socket to ensure stable power delivery 
 </p>
 
 <p>
-1 - CPU governor and frequency
+1 - Set the CPU governor or frequency:
 </p>
 
 <p>
@@ -644,7 +644,7 @@ This command will return, depending on your CPU driver, the following:
 1.1 - The Intel Pstate driver
 </p>
 
-<pre class="example" id="orgd21cb20">
+<pre class="example" id="org9f382cc">
 
 analyzing CPU 0:
 driver: intel_pstate
@@ -665,7 +665,7 @@ boost state support:
 </pre>
 
 <p>
-If this case, you should use the following command to set the CPU governor for all CPU cores:
+If this case, you should use the following command to set the CPU governor to <b><span class="underline">performance</span></b> for all CPU cores:
 </p>
 
 <div class="org-src-container">
@@ -679,7 +679,7 @@ $ sudo cpupower -c all -g performance
 1.2 - The ACPI driver
 </p>
 
-<pre class="example" id="org9e95da7">
+<pre class="example" id="orgdb03ab7">
 
 analyzing CPU 0:
 driver: acpi-cpufreq
@@ -705,14 +705,14 @@ boost state support:
 </pre>
 
 <p>
-In this case, you should set the frequency of the target code to the maximum frequency
+In this case, you should set the frequency of the target CPU core to the maximum frequency
 available in your CPU using the following command:
 </p>
 
 <div class="org-src-container">
 <pre class="src src-sh">
 $ sudo cpupower -c all -g userspace
-$ sudo cpupower -c TARGET_CORE -f MAX_FREQ
+$ sudo cpupower -c TARGET_CORE_ID -f MAX_FREQ
 
 </pre>
 </div>
@@ -724,21 +724,21 @@ the output containing the performance measurement into a file:
 
 <div class="org-src-container">
 <pre class="src src-sh">
-$ sudo taskset -c TARGET_CORE ./nbody0 &gt; out0.dat
+$ taskset -c TARGET_CORE ./nbody0 &gt; out0.dat
 
 </pre>
 </div>
 
 <p>
-Once you have produced the multiple assembly versions (scalar and vector)of the specified C functions in the
+Once you have produced the multiple assembly versions (scalar and vector) of the specified C functions in the
 N-Body simulation, you can draw comparison plots of the performance of each version using <b>GNUPlot</b>.
 </p>
 
 <p>
-An example of a GNUPlot script to compare the C, SSE scalar, and SSE packed versions:
+Here is an example of a GNUPlot script to compare the C, SSE scalar, and SSE packed versions:
 </p>
 
-<pre class="example" id="orge484997">
+<pre class="example" id="org75195be">
 
 set term png size 1900,1000
 
@@ -746,16 +746,26 @@ set grid
 
 set ylabel "Latency in cycles"
 
-set xlabel "Simulation iteration"
+set xlabel "Simulation iteration index"
 
 plot "out0.dat" w lp "C version", "out0_sd.dat" w lp "SSE scalar", "out0_pd.dat" w lp "SSE packed"
+
+</pre>
+
+<p>
+This scripts generates a PNG image and should be invoked as follows:
+</p>
+
+<pre class="example" id="orgef2a980">
+
+$ gnuplot -c plot.gp &gt; plot.png
 
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org6262f12" class="outline-2">
-<h2 id="org6262f12"><span class="section-number-2">4.</span> Important note</h2>
+<div id="outline-container-orgc9a27b0" class="outline-2">
+<h2 id="orgc9a27b0"><span class="section-number-2">4.</span> Important note</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 If you are using a virtual machine, the performance measurements will most likely be wrong/invalid and
@@ -767,7 +777,7 @@ you won't be able to set the frequency/governor.
 <div id="postamble" class="status">
 <p class="date">Date: 2023</p>
 <p class="author">Author: yaspr</p>
-<p class="date">Created: 2023-10-05 Thu 13:26</p>
+<p class="date">Created: 2024-10-02 Wed 13:49</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

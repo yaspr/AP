@@ -89,7 +89,7 @@
 * Deliverable
 
   For this lab, you have to convert the following C functions in the N-Body interaction simulation
-  provided in the *todo/nbody0.c* directory into multiple assembly versions using scalar and vector
+  provided in the *todo/nbody0.c* file into multiple assembly versions using scalar and vector
   operations.  
 
 #+BEGIN_SRC c
@@ -128,15 +128,15 @@
 
   The provided simulation code uses the *RDTSC* instruction to measure the performance of the
   simulation routine for every iteration. The *RDTSC* instruction returns the number of cycles
-  elapsed starting from when the CPU was started. In this case, it used to evaluate the number
+  elapsed starting from when the CPU was turned on. In this case, it is used to evaluate the number
   of cycles elapsed during the execution of the simulation function. This instruction is VERY dependent
-  on CPU frequency and can only be precise when measured target takes at least 500 cycles. 
-
+  on CPU frequency and can only be precise when the measured target code takes at least 500 cycles. 
+  
   In order for the measurements to be valid, you have to follow to following steps:
 
-  0 - If you are using a laptop, plug it to the wall socket
+  0 - If you are using a laptop, plug it to the wall socket to ensure stable power delivery 
   
-  1 - CPU governor and frequency
+  1 - Set the CPU governor or frequency:
 
   The CPU governor is the part of the OS that handles the dynamic frequency management of CPU cores.
   There are multiple governors available under the two most common CPU drivers:
@@ -177,7 +177,7 @@
      
   #+END_EXAMPLE
     
-  If this case, you should use the following command to set the CPU governor for all CPU cores:
+  If this case, you should use the following command to set the CPU governor to *_performance_* for all CPU cores:
   
   #+BEGIN_SRC sh
 
@@ -212,13 +212,13 @@
 
   #+END_EXAMPLE
 
-  In this case, you should set the frequency of the target code to the maximum frequency
+  In this case, you should set the frequency of the target CPU core to the maximum frequency
   available in your CPU using the following command:
 
   #+BEGIN_SRC sh
 
     $ sudo cpupower -c all -g userspace
-    $ sudo cpupower -c TARGET_CORE -f MAX_FREQ
+    $ sudo cpupower -c TARGET_CORE_ID -f MAX_FREQ
 
   #+END_SRC
 
@@ -227,14 +227,14 @@
 
   #+BEGIN_SRC sh
 
-    $ sudo taskset -c TARGET_CORE ./nbody0 > out0.dat
+    $ taskset -c TARGET_CORE ./nbody0 > out0.dat
 
   #+END_SRC
 
-  Once you have produced the multiple assembly versions (scalar and vector)of the specified C functions in the
+  Once you have produced the multiple assembly versions (scalar and vector) of the specified C functions in the
   N-Body simulation, you can draw comparison plots of the performance of each version using *GNUPlot*.
 
-  An example of a GNUPlot script to compare the C, SSE scalar, and SSE packed versions:
+  Here is an example of a GNUPlot script to compare the C, SSE scalar, and SSE packed versions:
   
   #+BEGIN_EXAMPLE
 
@@ -244,12 +244,20 @@
 
   set ylabel "Latency in cycles"
 
-  set xlabel "Simulation iteration"
+  set xlabel "Simulation iteration index"
 
   plot "out0.dat" w lp "C version", "out0_sd.dat" w lp "SSE scalar", "out0_pd.dat" w lp "SSE packed"
   
   #+END_EXAMPLE
 
+  This scripts generates a PNG image and should be invoked as follows:
+
+  #+BEGIN_EXAMPLE
+
+    $ gnuplot -c plot.gp > plot.png
+    
+  #+END_EXAMPLE
+  
 * Important note
 
   If you are using a virtual machine, the performance measurements will most likely be wrong/invalid and
