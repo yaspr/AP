@@ -250,7 +250,7 @@
   
   #+END_EXAMPLE
 
-  This scripts generates a PNG image and should be invoked as follows:
+  This script generates a PNG image and should be invoked as follows:
 
   #+BEGIN_EXAMPLE
 
